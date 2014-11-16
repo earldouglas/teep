@@ -15,24 +15,14 @@ teep.option(x); // some(x)
 
 ###Index
 
-**Classes**
+**Functions**
 
-* [class: option](#option)
-  * [new option(x)](#new_option)
-* [class: valid](#valid)
-  * [new valid(value)](#new_valid)
-* [class: invalid](#invalid)
-  * [new invalid(errors)](#new_invalid)
+* [option(x)](#option)
+* [valid(value)](#valid)
+* [invalid(errors)](#invalid)
  
 <a name="option"></a>
-###class: option
-**Members**
-
-* [class: option](#option)
-  * [new option(x)](#new_option)
-
-<a name="new_option"></a>
-####new option(x)
+###option(x)
 Creates an option instance.
 
 **Params**
@@ -41,14 +31,7 @@ Creates an option instance.
 
 **Returns**:  - some(x), or none() if x is null.  
 <a name="valid"></a>
-###class: valid
-**Members**
-
-* [class: valid](#valid)
-  * [new valid(value)](#new_valid)
-
-<a name="new_valid"></a>
-####new valid(value)
+###valid(value)
 Creates a valid validation instance.
 
 **Params**
@@ -57,14 +40,7 @@ Creates a valid validation instance.
 
 **Returns**:  - valid(value).  
 <a name="invalid"></a>
-###class: invalid
-**Members**
-
-* [class: invalid](#invalid)
-  * [new invalid(errors)](#new_invalid)
-
-<a name="new_invalid"></a>
-####new invalid(errors)
+###invalid(errors)
 Creates an invalid validation instance.
 
 **Params**
