@@ -8,7 +8,7 @@ Install the module with: `npm install teep`
 ```javascript
 var teep = require('teep');
 teep.option(); // none
-teep.option(x); // some(x)
+teep.option(value); // some(value)
 ```
 
 ## Documentation
@@ -17,19 +17,19 @@ teep.option(x); // some(x)
 
 **Functions**
 
-* [option(x)](#option)
+* [option(value)](#option)
 * [valid(value)](#valid)
 * [invalid(errors)](#invalid)
  
 <a name="option"></a>
-###option(x)
+###option(value)
 Creates an option instance.
 
 **Params**
 
-- x `any` - The optional value.  
+- value `any` - The optional value.  
 
-**Returns**:  - some(x), or none() if x is null.  
+**Returns**:  - some(value), or none() if value is null.  
 <a name="valid"></a>
 ###valid(value)
 Creates a valid validation instance.
@@ -59,12 +59,12 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ### 0.2.0
 
-* Validation, via `valid(x)` and `invalid([xs])`
+* Validation, via `valid(value)` and `invalid([error])`
 * Fix for `option(false)` returning `none()`
 
 ### 0.1.2
 
-* Option, via `option(x)` and `option()`
+* Option, via `option(value)` and `option()`
 
 ## License
 Copyright (c) 2014 James Earl Douglas  
