@@ -22,23 +22,32 @@ var teep = require('../lib/teep.js');
     test.ifError(value)
 */
 
+function inc(x) { return 1 + x; }
+
 exports['option'] = {
   setUp: function(done) {
     // setup here
     done();
   },
-  'no args': function(test) {
+  'constructor: no args': function(test) {
     test.expect(2);
     // tests here
     test.equal(teep.option().empty, true, 'should be empty.');
     test.equal(teep.option().toString(), 'none()', 'should be none().');
     test.done();
   },
-  'one arg': function(test) {
+  'constructor: one arg': function(test) {
     test.expect(2);
     // tests here
     test.equal(teep.option(42).empty, false, 'should not be empty.');
     test.equal(teep.option(42).toString(), 'some(42)', 'should be some(42).');
+    test.done();
+  },
+  'map': function(test) {
+    test.expect(2);
+    // tests here
+    test.equal(teep.option().map(inc).toString(), 'none()', 'should be empty.');
+    test.equal(teep.option(41).map(inc).toString(), 'some(42)', 'should be 42.');
     test.done();
   },
 };
