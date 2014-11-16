@@ -47,7 +47,7 @@ Creates an invalid validation instance.
 
 - errors `Array.<any>` - The validation errors.  
 
-**Returns**:  - invalid([errors]).  
+**Returns**:  - invalid(errors).  
 
 ## Examples
 _(Coming soon)_
@@ -59,7 +59,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ### 0.2.0
 
-* Validation, via `valid(value)` and `invalid([error])`
+* Validation, via `valid(value)` and `invalid(errors)`
 * Fix for `option(false)` returning `none()`
 
 ### 0.1.2
