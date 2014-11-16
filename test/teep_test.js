@@ -38,16 +38,23 @@ exports['option'] = {
   },
   'constructor: one arg': function(test) {
     test.expect(2);
-    // tests here
     test.equal(teep.option(42).empty, false, 'should not be empty.');
     test.equal(teep.option(42).toString(), 'some(42)', 'should be some(42).');
     test.done();
   },
   'map': function(test) {
     test.expect(2);
-    // tests here
     test.equal(teep.option().map(inc).toString(), 'none()', 'should be empty.');
     test.equal(teep.option(41).map(inc).toString(), 'some(42)', 'should be 42.');
+    test.done();
+  },
+};
+
+exports['validation'] = {
+  'map': function(test) {
+    test.expect(2);
+    test.equal(teep.valid(41).map(inc).toString(), 'valid(42)', 'should be 42.');
+    test.equal(teep.invalid(['wat']).map(inc).toString(), 'invalid(wat)', 'should be invalid(wat).');
     test.done();
   },
 };
