@@ -1,4 +1,4 @@
-# teep [![Build Status](https://secure.travis-ci.org/james/teep.png?branch=master)](http://travis-ci.org/james/teep)
+# teep [![Build Status](https://secure.travis-ci.org/earldouglas/teep.png?branch=master)](http://travis-ci.org/james/teep)
 
 A JavaScript library for functional programming.
 
