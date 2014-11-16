@@ -12,7 +12,23 @@ teep.option(x); // some(x)
 ```
 
 ## Documentation
-_(Coming soon)_
+
+<a name="option"></a>
+### class: option
+**Members**
+
+* [class: option](#option)
+  * [new option(x)](#new_option)
+
+<a name="new_option"></a>
+#### new option(x)
+Creates an option instance.
+
+**Params**
+
+- x `any` - The optional value.  
+
+**Returns**:  - some(x), or none() if x is null.  
 
 ## Examples
 _(Coming soon)_
