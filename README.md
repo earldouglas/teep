@@ -7,7 +7,8 @@ Install the module with: `npm install teep`
 
 ```javascript
 var teep = require('teep');
-teep.awesome(); // "awesome"
+teep.option(); // none
+teep.option(x); // some(x)
 ```
 
 ## Documentation
