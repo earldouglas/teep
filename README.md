@@ -57,7 +57,7 @@ var fortyTwo = curry(mathemagic)(2)(20)(1);
 
 ### cons(head, tail) 
 
-A list constructor
+Constructs a linked list
 
 **Parameters**
 
@@ -134,6 +134,10 @@ Add unit tests for any new or changed functionality. Lint and test your code
 using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+### 0.3.1
+
+* Documentation aggregation
 
 ### 0.3.0
 
