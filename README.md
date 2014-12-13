@@ -123,7 +123,7 @@ Creates an invalid validation instance
 
 **Parameters**
 
-**errors**: `Array.&lt;any&gt;`, The validation errors
+**errors**: `Array<any>`, The validation errors
 
 **Returns**: invalid(errors)
 
