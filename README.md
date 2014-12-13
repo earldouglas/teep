@@ -13,47 +13,13 @@ teep.option(value); // some(value)
 
 ## Documentation
 
-###Index
-
-**Functions**
-
-* [option(value)](#option)
-* [valid(value)](#valid)
-* [invalid(errors)](#invalid)
- 
-<a name="option"></a>
-###option(value)
-Creates an option instance.
-
-**Params**
-
-- value `any` - The optional value.  
-
-**Returns**:  - some(value), or none() if value is null.  
-<a name="valid"></a>
-###valid(value)
-Creates a valid validation instance.
-
-**Params**
-
-- value `any` - The valid value.  
-
-**Returns**:  - valid(value).  
-<a name="invalid"></a>
-###invalid(errors)
-Creates an invalid validation instance.
-
-**Params**
-
-- errors `Array.<any>` - The validation errors.  
-
-**Returns**:  - invalid(errors).  
-
-## Examples
-_(Coming soon)_
+See the [doc](https://github.com/earldouglas/teep/tree/master/doc) directory.
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+
+In lieu of a formal styleguide, take care to maintain the existing coding style.
+Add unit tests for any new or changed functionality. Lint and test your code
+using [Grunt](http://gruntjs.com/).
 
 ## Release History
 
