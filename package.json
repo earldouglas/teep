@@ -29,10 +29,12 @@
     "test": "grunt nodeunit"
   },
   "devDependencies": {
+    "bluebird": "~2.2.2",
     "grunt-contrib-jshint": "~0.6.4",
     "grunt-contrib-nodeunit": "~0.2.0",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt": "~0.4.5"
+    "grunt": "~0.4.5",
+    "grunt-cli": "~0.1.13"
   },
   "keywords": []
 }
