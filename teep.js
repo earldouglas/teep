@@ -20,5 +20,4 @@ exports.invalid   = validation.invalid;
 exports.cons      = list.cons;
 exports.nil       = list.nil;
 exports.collect   = promise.collect;
-exports.collectFn = promise.collectFn;
 exports.curry     = fn.curry;

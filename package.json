@@ -1,7 +1,7 @@
 {
   "name": "teep",
   "description": "A JavaScript library for functional programming.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/earldouglas/teep",
   "author": {
     "name": "James Earl Douglas",

@@ -23,6 +23,12 @@ using [Grunt](http://gruntjs.com/).
 
 ## Release History
 
+### 0.3.0
+
+* Linked lists, via `cons(head, tail)` and `nil`
+* Function currying, via `curry(f)`
+* Promises aggregation, via `collect(promises, callback)`
+
 ### 0.2.0
 
 * Validation, via `valid(value)` and `invalid(errors)`
