@@ -21,7 +21,7 @@
       "url": "https://github.com/earldouglas/teep/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "lib/teep",
+  "main": "teep",
   "engines": {
     "node": ">= 0.10.0"
   },

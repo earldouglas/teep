@@ -2,7 +2,7 @@
 
 if (!global.Promise) { global.Promise = require('bluebird'); }
 
-var teep = require('../lib/teep.js');
+var teep = require('../teep.js');
 
 exports['promise'] = {
   'promise.collect': function(test) {

@@ -1,6 +1,6 @@
 'use strict';
 
-var teep = require('../lib/teep.js');
+var teep = require('../teep.js');
 
 function inc(x) { return 1 + x; }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var teep = require('../lib/teep.js');
+var teep = require('../teep.js');
 var cons = teep.cons;
 var nil  = teep.nil;
 

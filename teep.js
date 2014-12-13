@@ -8,10 +8,11 @@
 
 'use strict';
 
-var option     = require("./option");
-var validation = require("./validation");
-var list       = require("./list");
-var promise    = require("./promise");
+var option     = require("./lib/option");
+var validation = require("./lib/validation");
+var list       = require("./lib/list");
+var promise    = require("./lib/promise");
+var fn         = require("./lib/function");
 
 exports.option    = option.option;
 exports.valid     = validation.valid;
@@ -20,3 +21,4 @@ exports.cons      = list.cons;
 exports.nil       = list.nil;
 exports.collect   = promise.collect;
 exports.collectFn = promise.collectFn;
+exports.curry     = fn.curry;
