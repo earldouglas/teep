@@ -183,6 +183,10 @@ using [Grunt](http://gruntjs.com/).
 
 ## Release History
 
+### 0.4.2
+
+* Documentation formatting for npmjs.com
+
 ### 0.4.1
 
 * Documentation fixup
