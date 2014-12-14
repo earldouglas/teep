@@ -193,7 +193,7 @@ using [Grunt](http://gruntjs.com/).
 
 ### 0.4.0
 
-* Function composition
+* Function composition, via `compose(f, g)`
 
 ### 0.3.1
 
