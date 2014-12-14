@@ -32,6 +32,19 @@ output to `f`, applies `f` to it, and returns the result.
 
 The application of `(f ∘ g)(x)` is equivalent to `f(g(x))`.
 
+*Example:*
+
+function inc(x) {
+  return x + 1;
+}
+
+function square(x) {
+  return x * x;
+}
+
+var nine = compose(square, inc)(2); // square(inc(2)) == (2 + 1) ^ 2
+var five = compose(inc, square)(2); // inc(square(2)) == (2 ^ 2) + 1
+
 **Parameters**
 
 **f**: `function`, a unary function
@@ -71,17 +84,18 @@ var fortyTwo = curry(mathemagic)(2)(20)(1);
 
 **args**: `array`, [optional] arguments to apply to `f`
 
-### cons(head, tail) 
+### list(head, tail) 
 
-`cons` constructs a linked list from a value, `head`, representing the first
+`list` constructs a linked list from a value, `head`, representing the first
 element in the list, and another list, `tail`, representing the rest of the
-constructed list.
+constructed list. If `head` is null, `tail` is returned, and if `tail` is
+null, the empty list is returned.
 
-A list instance created by `cons` exposes the following fields:
+A list instance exposes the following fields:
 
- * `head`
- * `tail`
- * `length` - returns 1 + the length of tail
+ * `head` - the head of this list, if it is not empty
+ * `tail` - the tail of this list, if it is not empty
+ * `length` - returns the length of this list
  * `map(f)` - returns a new list created by applying `f` over this list
  * `flatMap(f)` - returns a new list created by applying `f` over this list and concatenating the results
  * `concat(l)` - returns the concatenation of this list with l

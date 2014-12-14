@@ -1,8 +1,7 @@
 'use strict';
 
 var teep = require('../teep.js');
-var cons = teep.cons;
-var nil  = teep.nil;
+var list = teep.list;
 
 exports['list'] = {
   'perf': function(test) {
@@ -20,9 +19,9 @@ exports['list'] = {
     console.timeEnd('push');
 
     console.time('cons');
-    var ys = nil;
+    var ys = list();
     for (var j = 0; j < iterations; j++) {
-        ys = cons(i, ys);
+        ys = list(i, ys);
     }
     console.timeEnd('cons');
 
@@ -33,9 +32,9 @@ exports['list'] = {
    'length': function(test) {
     test.expect(3);
 
-    test.equal(4, cons(0, cons(1, nil)).concat(cons(2, cons(3, nil))).length);
-    test.equal(4, cons(0, cons(1, cons(2, cons(3, nil)))).length);
-    test.equal(0, nil.length);
+    test.equal(4, list(0, list(1, list())).concat(list(2, list(3, list()))).length);
+    test.equal(4, list(0, list(1, list(2, list(3, list())))).length);
+    test.equal(0, list().length);
 
     test.done();
   },
@@ -43,10 +42,10 @@ exports['list'] = {
     test.expect(3);
 
     test.equal('cons(0, cons(1, cons(2, cons(3, nil))))',
-               cons(0, cons(1, nil)).concat(cons(2, cons(3, nil))).toString());
+               list(0, list(1, list())).concat(list(2, list(3, list()))).toString());
     test.equal('cons(0, cons(1, cons(2, cons(3, nil))))',
-               cons(0, cons(1, cons(2, cons(3, nil)))).toString());
-    test.equal('nil', nil.toString());
+               list(0, list(1, list(2, list(3, list())))).toString());
+    test.equal('nil', list().toString());
 
     test.done();
   },
@@ -56,13 +55,34 @@ exports['list'] = {
     var o1 = { name: 'o1' };
     var o2 = { name: 'o2' };
 
-    var l1 = cons(o1, nil);
-    var l2 = cons(o2, l1);
+    var l1 = list(o1, list());
+    var l2 = list(o2, l1);
 
     o1.name = 'oh one';
 
     test.equal(l1.head.name, 'oh one');
     test.equal(l2.tail.head.name, 'oh one');
+
+    test.done();
+  },
+  'construction': function(test) {
+    test.expect(7);
+
+    var l1 = list();
+    var l2 = list('a');
+    var l2a = list('a', l1);
+    var l3 = list('b', l2);
+    var l4 = list('c', l3);
+    var l5 = list('d', l4);
+    var l6 = list(null, l5);
+
+    test.equal(l1.toString(), 'nil');
+    test.equal(l2.toString(), 'cons(a, nil)');
+    test.equal(l2a.toString(), 'cons(a, nil)');
+    test.equal(l3.toString(), 'cons(b, cons(a, nil))');
+    test.equal(l4.toString(), 'cons(c, cons(b, cons(a, nil)))');
+    test.equal(l5.toString(), 'cons(d, cons(c, cons(b, cons(a, nil))))');
+    test.equal(l6.toString(), 'cons(d, cons(c, cons(b, cons(a, nil))))');
 
     test.done();
   },
