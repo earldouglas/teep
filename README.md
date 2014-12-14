@@ -83,8 +83,7 @@ A list instance created by `cons` exposes the following fields:
  * `tail`
  * `length` - returns 1 + the length of tail
  * `map(f)` - returns a new list created by applying `f` over this list
- * `flatMap(f)` - returns a new list created by applying `f` over this list
-                     and concatenating the results
+ * `flatMap(f)` - returns a new list created by applying `f` over this list and concatenating the results
  * `concat(l)` - returns the concatenation of this list with l
  * `toString()`
 
@@ -103,13 +102,9 @@ was supplied.
 An option instance exposes the following fields:
 
 * `empty`
-* `map(f)` - returns a new option by applying `f` over this option's value,
-                and wrapping the result in an option
-* `flatMap(f)` - returns a new option by applying `f` over this option's
-                    value, and returning the result
-* `ap(a)` - assumes this option wraps a function, and returns a new option
-               by mapping this option's function over the option `a` and
-               returning the result
+* `map(f)` - returns a new option by applying `f` over this option's value, and wrapping the result in an option
+* `flatMap(f)` - returns a new option by applying `f` over this option's value, and returning the result
+* `ap(a)` - assumes this option wraps a function, and returns a new option by mapping this option's function over the option `a` and returning the result
 * `toString()`
 
 **Parameters**
@@ -143,8 +138,7 @@ p is congruent to `Promise.resolve(2 * (20 + 1))`, or `Promise.resolve(42)`
 
 **promises**: `array`, an array of promises
 
-**callback**: `function`, a function that takes as arguments the results of
-                              the promises
+**callback**: `function`, a function that takes as arguments the results of the promises
 
 ### valid(value) 
 
@@ -154,13 +148,9 @@ A validation created by `valid` exposes the following fields:
 
 * `valid` - returns true
 * `value` - returns the (valid) value
-* `map(f) - returns a new (valid) validation by mapping `f` over this
-               validation's value and wrapping the in a (valid) validation
-* `flatMap(f) - returns a new validation result by mapping `f` over this
-                   validation's value and returning the result
-* `ap(a)` - assumes this validation wraps a function, and returns a new
-               validation by mapping this validation's function over the
-               validation `a` and returning the result
+* `map(f) - returns a new (valid) validation by mapping `f` over this validation's value and wrapping the in a (valid) validation
+* `flatMap(f) - returns a new validation result by mapping `f` over this validation's value and returning the result
+* `ap(a)` - assumes this validation wraps a function, and returns a new validation by mapping this validation's function over the validation `a` and returning the result
 * `toString()`
 
 **Parameters**
@@ -178,9 +168,7 @@ A validation created by `invalid` exposes the following fields:
 * `errors` - returns the array of errors
 * `map(f) - returns a this validation
 * `flatMap(f) - returns this validation
-* `ap(a)` - if `a` is valid, return this validation, otherwise returns a new
-               (invalid) validation containing the concatenation of this
-               validation's errors with `a`'s errors
+* `ap(a)` - if `a` is valid, return this validation, otherwise returns a new (invalid) validation containing the concatenation of this validation's errors with `a`'s errors
 * `toString()`
 
 **Parameters**
