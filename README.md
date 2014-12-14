@@ -24,9 +24,19 @@ var d = c.map(function (x) { return x + 1; }); // some(42)
 
 ## Documentation
 
-### curry(f) 
+### compose() 
 
-Curries a function
+`compose` takes two unary functions `f` and `g`, and combines them into a
+single unary function `f ∘ g` that applies `g` to an input, passes the
+output to `f`, applies `f` to it, and returns the result.
+
+The application of `(f ∘ g)(x)` is equivalent to `f(g(x))`.
+
+### curry() 
+
+`curry` takes an n-ary function `f` and an optional array of arguments, and
+returns a curried version of `f`, comprised of *n* nested unary functions
+where the arity of `f` is *n*.
 
 *Example:*
 
@@ -49,35 +59,42 @@ function mathemagic(x, y, z) {
 var fortyTwo = curry(mathemagic)(2)(20)(1);
 ```
 
-**Parameters**
+### cons() 
 
-**f**: An n-ary function to curry
+`cons` constructs a linked list from a value, `head`, representing the first
+element in the list, and another list, `tail`, representing the rest of the
+constructed list.
 
-**Returns**: Nested unary functions with depth of `f`'s arity
+A list instance created by `cons` exposes the following fields:
 
-### cons(head, tail) 
+ * `head`
+ * `tail`
+ * `length` - returns 1 + the length of tail
+ * `map(f)` - returns a new list created by applying `f` over this list
+ * `flatMap(f)` - returns a new list created by applying `f` over this list
+                     and concatenating the results
+ * `concat(l)` - returns the concatenation of this list with l
+ * `toString()`
 
-Constructs a linked list
+### option() 
 
-**Parameters**
+`option` constructs a representation of an optional value, represented as
+either "some value" or "no value", depending on whether a non-null argument
+was supplied.
 
-**head**: The first element in the list
+An `option` instance exposes the following fields:
 
-**tail**: The list of elements that follow `head`
+* `empty`
+* `map(f)` - returns a new option by applying `f` over this option's value,
+                and wrapping the result in an option
+* `flatMap(f)` - returns a new option by applying `f` over this option's
+                    value, and returning the result
+* `ap(a)` - assumes this option wraps a function, and returns a new option
+               by mapping this option's function over the option `a` and
+               returning the result
+* `toString()`
 
-**Returns**: A list of elements with `head` prepended onto `tail`
-
-### option(value) 
-
-Creates an option instance
-
-**Parameters**
-
-**value**: `any`, The optional value
-
-**Returns**: some(value), or none() if value is null
-
-### collect(promises, callback) 
+### collect() 
 
 Given an array of promises and a callback, passes the result of each promise
 (in order) as an argument to the callback, and returns a single promise that
@@ -90,42 +107,48 @@ returns a promise, and will be retrieved as late as possible.
 
 ```javascript
 var p = collect([
-    Promise.resolve(2),
-    Promise.resolve(20),
-    Promise.resolve(1)
+  Promise.resolve(2),
+  Promise.resolve(20),
+  Promise.resolve(1)
 ], function (x, y, z) {
-    return x * (y + z);
+  return x * (y + z);
 });
 ```
 
 p is congruent to `Promise.resolve(2 * (20 + 1))`, or `Promise.resolve(42)`
 
-**Parameters**
+### valid() 
 
-**promises**: An array of Promise instances or Promise-returning functions
+`valid` constructs a "validation" representing a valid value.
 
-**callback**: A function that takes as arguments the results of the promises
+A validation created by `valid` exposes the following fields:
 
-### valid(value) 
+* `valid` - returns true
+* `value` - returns the (valid) value
+* `map(f) - returns a new (valid) validation by mapping `f` over this
+               validation's value and wrapping the in a (valid) validation
+* `flatMap(f) - returns a new validation result by mapping `f` over this
+                   validation's value and returning the result
+* `ap(a)` - assumes this validation wraps a function, and returns a new
+               validation by mapping this validation's function over the
+               validation `a` and returning the result
+* `toString()`
 
-Creates a valid validation instance
+### invalid() 
 
-**Parameters**
+`invalid` constructs a "validation" representing an invalid value, and
+containing an array of errors.
 
-**value**: `any`, The valid value
+A validation created by `invalid` exposes the following fields:
 
-**Returns**: valid(value)
-
-
-### invalid(errors) 
-
-Creates an invalid validation instance
-
-**Parameters**
-
-**errors**: `Array<any>`, The validation errors
-
-**Returns**: invalid(errors)
+* `valid` - returns false
+* `errors` - returns the array of errors
+* `map(f) - returns a this validation
+* `flatMap(f) - returns this validation
+* `ap(a)` - if `a` is valid, return this validation, otherwise returns a new
+               (invalid) validation containing the concatenation of this
+               validation's errors with `a`'s errors
+* `toString()`
 
 ## Contributing
 

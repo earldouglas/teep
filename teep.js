@@ -21,3 +21,4 @@ exports.cons      = list.cons;
 exports.nil       = list.nil;
 exports.collect   = promise.collect;
 exports.curry     = fn.curry;
+exports.compose   = fn.compose;

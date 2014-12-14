@@ -13,6 +13,25 @@ function mathemagic(x, y, z) {
 };
 
 exports['fn'] = {
+  'fn.compose': function(test) {
+    test.expect(2);
+
+    function inc(x) {
+      return x + 1;
+    }
+
+    function square(x) {
+      return x * x;
+    }
+
+    var nine = teep.compose(square, inc)(2);
+    test.equal(nine, 9);
+
+    var five = teep.compose(inc, square)(2);
+    test.equal(five, 5);
+
+    test.done();
+  },
   'fn.curry': function(test) {
     test.expect(2);
 
