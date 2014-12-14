@@ -195,6 +195,14 @@ using [Grunt](http://gruntjs.com/).
 
 ## Release History
 
+### 0.4.1
+
+* Documentation fixup
+
+### 0.4.0
+
+* Function composition
+
 ### 0.3.1
 
 * Documentation aggregation
