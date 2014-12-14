@@ -24,7 +24,7 @@ var d = c.map(function (x) { return x + 1; }); // some(42)
 
 ## Documentation
 
-### compose() 
+### compose(f, g) 
 
 `compose` takes two unary functions `f` and `g`, and combines them into a
 single unary function `f ∘ g` that applies `g` to an input, passes the
@@ -32,7 +32,13 @@ output to `f`, applies `f` to it, and returns the result.
 
 The application of `(f ∘ g)(x)` is equivalent to `f(g(x))`.
 
-### curry() 
+**Parameters**
+
+**f**: `function`, a unary function
+
+**g**: `function`, a unary function
+
+### curry(f, args) 
 
 `curry` takes an n-ary function `f` and an optional array of arguments, and
 returns a curried version of `f`, comprised of *n* nested unary functions
@@ -59,7 +65,13 @@ function mathemagic(x, y, z) {
 var fortyTwo = curry(mathemagic)(2)(20)(1);
 ```
 
-### cons() 
+**Parameters**
+
+**f**: `function`, an n-ary function
+
+**args**: `array`, [optional] arguments to apply to `f`
+
+### cons(head, tail) 
 
 `cons` constructs a linked list from a value, `head`, representing the first
 element in the list, and another list, `tail`, representing the rest of the
@@ -76,13 +88,19 @@ A list instance created by `cons` exposes the following fields:
  * `concat(l)` - returns the concatenation of this list with l
  * `toString()`
 
-### option() 
+**Parameters**
+
+**head**: `any`, the first element in the list
+
+**tail**: `list`, the rest of the list
+
+### option(value) 
 
 `option` constructs a representation of an optional value, represented as
 either "some value" or "no value", depending on whether a non-null argument
 was supplied.
 
-An `option` instance exposes the following fields:
+An option instance exposes the following fields:
 
 * `empty`
 * `map(f)` - returns a new option by applying `f` over this option's value,
@@ -94,7 +112,11 @@ An `option` instance exposes the following fields:
                returning the result
 * `toString()`
 
-### collect() 
+**Parameters**
+
+**value**: `any`, [optional] the value to wrap in an option
+
+### collect(promises, callback) 
 
 Given an array of promises and a callback, passes the result of each promise
 (in order) as an argument to the callback, and returns a single promise that
@@ -117,7 +139,14 @@ var p = collect([
 
 p is congruent to `Promise.resolve(2 * (20 + 1))`, or `Promise.resolve(42)`
 
-### valid() 
+**Parameters**
+
+**promises**: `array`, an array of promises
+
+**callback**: `function`, a function that takes as arguments the results of
+                              the promises
+
+### valid(value) 
 
 `valid` constructs a "validation" representing a valid value.
 
@@ -134,7 +163,11 @@ A validation created by `valid` exposes the following fields:
                validation `a` and returning the result
 * `toString()`
 
-### invalid() 
+**Parameters**
+
+**value**: `any`, a valid value to wrap in a validation
+
+### invalid(errors) 
 
 `invalid` constructs a "validation" representing an invalid value, and
 containing an array of errors.
@@ -149,6 +182,10 @@ A validation created by `invalid` exposes the following fields:
                (invalid) validation containing the concatenation of this
                validation's errors with `a`'s errors
 * `toString()`
+
+**Parameters**
+
+**errors**: `array`, an array of errors to wrap in a validation
 
 ## Contributing
 
