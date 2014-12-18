@@ -21,3 +21,5 @@ exports.list      = list.list;
 exports.collect   = promise.collect;
 exports.curry     = fn.curry;
 exports.compose   = fn.compose;
+exports.memoize   = fn.memoize;
+exports.lazy      = fn.lazy;
