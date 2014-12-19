@@ -244,6 +244,12 @@ using [Grunt](http://gruntjs.com/).
 
 ## Release History
 
+### 0.5.0
+
+* Encapsulate `cons()` and `nil` behind `list()`
+* Function memoization via `memoize(fn)`
+* Lazy function evaluation via `lazy(fn)`
+
 ### 0.4.2
 
 * Documentation formatting for npmjs.com
