@@ -24,7 +24,7 @@ var d = c.map(function (x) { return x + 1; }); // some(42)
 
 ## Documentation
 
-### compose(f, g) 
+### compose(f, g)
 
 `compose` takes two unary functions `f` and `g`, and combines them into a
 single unary function `f ∘ g` that applies `g` to an input, passes the
@@ -51,7 +51,7 @@ var five = compose(inc, square)(2); // inc(square(2)) == (2 ^ 2) + 1
 
 **g**: `function`, a unary function
 
-### curry(f, args) 
+### curry(f, args)
 
 `curry` takes an n-ary function `f` and an optional array of arguments, and
 returns a curried version of `f`, comprised of *n* nested unary functions
@@ -84,7 +84,54 @@ var fortyTwo = curry(mathemagic)(2)(20)(1);
 
 **args**: `array`, [optional] arguments to apply to `f`
 
-### list(head, tail) 
+### memoize(f, cache)
+
+`memoize` takes a function and an optional cache implementation, and
+memoizes the function by backing it with the cache, if supplied, or a simple
+object-based cache otherwise.
+
+*Example:*
+
+```javascript
+function expensiveFn(n) { ... }
+
+var cheapFn = memoize(expensiveFn);
+
+var slowResult = cheapFn(42); // expensive computation the first time
+var fastResult = cheapFn(42); // cheap cache lookup the second time
+```
+
+**Parameters**
+
+**f**: `function`, an n-ary function
+
+**cache**: `object`, [optional] a cache object with get(k) and put(k,v) functions
+
+### lazy(f, cache)
+
+`lazy` takes a function and an optional cache implementation, and creates a
+function that, given input arguments, returns a lazy evaluator that will
+apply the function to the arguments only when needed, and only once if
+needed many times.
+
+*Example:*
+
+```javascript
+function expensiveFn(n) { ... }
+
+var lazyVal = lazy(expensiveFn)(42); // lazily apply 42 -- no computation yet
+
+var slowResult = lazyVal.get(); // expensive computation the first time
+var fastResult = lazyVal.get(); // cheap cache lookup the second time
+```
+
+**Parameters**
+
+**f**: `function`, an n-ary function
+
+**cache**: `object`, [optional] a cache object with get(k) and put(k,v) functions
+
+### list(head, tail)
 
 `list` constructs a linked list from a value, `head`, representing the first
 element in the list, and another list, `tail`, representing the rest of the
@@ -107,7 +154,7 @@ A list instance exposes the following fields:
 
 **tail**: `list`, the rest of the list
 
-### option(value) 
+### option(value)
 
 `option` constructs a representation of an optional value, represented as
 either "some value" or "no value", depending on whether a non-null argument
@@ -125,13 +172,13 @@ An option instance exposes the following fields:
 
 **value**: `any`, [optional] the value to wrap in an option
 
-### collect(promises, callback) 
+### collect(promises, callback)
 
 Given an array of promises and a callback, passes the result of each promise
 (in order) as an argument to the callback, and returns a single promise that
 yields the result of the callback.
 
-Any of the promises can be 'lazy', implemented as a nullary function that 
+Any of the promises can be 'lazy', implemented as a nullary function that
 returns a promise, and will be retrieved as late as possible.
 
 *Example:*
@@ -154,7 +201,7 @@ p is congruent to `Promise.resolve(2 * (20 + 1))`, or `Promise.resolve(42)`
 
 **callback**: `function`, a function that takes as arguments the results of the promises
 
-### valid(value) 
+### valid(value)
 
 `valid` constructs a "validation" representing a valid value.
 
@@ -171,7 +218,7 @@ A validation created by `valid` exposes the following fields:
 
 **value**: `any`, a valid value to wrap in a validation
 
-### invalid(errors) 
+### invalid(errors)
 
 `invalid` constructs a "validation" representing an invalid value, and
 containing an array of errors.
@@ -229,5 +276,5 @@ using [Grunt](http://gruntjs.com/).
 * Option, via `option(value)` and `option()`
 
 ## License
-Copyright (c) 2014 James Earl Douglas  
+Copyright (c) 2014 James Earl Douglas
 Licensed under the MIT license.
