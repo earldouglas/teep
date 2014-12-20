@@ -34,6 +34,7 @@ The application of `(f ∘ g)(x)` is equivalent to `f(g(x))`.
 
 *Example:*
 
+```javascript
 function inc(x) {
   return x + 1;
 }
@@ -44,6 +45,7 @@ function square(x) {
 
 var nine = compose(square, inc)(2); // square(inc(2)) == (2 + 1) ^ 2
 var five = compose(inc, square)(2); // inc(square(2)) == (2 ^ 2) + 1
+```
 
 **Parameters**
 
