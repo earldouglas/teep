@@ -8,11 +8,14 @@
 
 'use strict';
 
-var option     = require("./lib/option");
-var validation = require("./lib/validation");
-var list       = require("./lib/list");
-var promise    = require("./lib/promise");
-var fn         = require("./lib/function");
+// Use instrumented code for code coverage tests
+var lib = process.env.LIB_COV ? 'lib-cov' : 'lib';
+
+var option     = require('./' + lib + '/option');
+var validation = require('./' + lib + '/validation');
+var list       = require('./' + lib + '/list');
+var promise    = require('./' + lib + '/promise');
+var fn         = require('./' + lib + '/function');
 
 exports.option    = option.option;
 exports.valid     = validation.valid;

@@ -1,4 +1,4 @@
-# Teep [![Build Status](https://secure.travis-ci.org/earldouglas/teep.png?branch=master)](http://travis-ci.org/james/teep)
+# Teep [![Build Status](https://secure.travis-ci.org/earldouglas/teep.png?branch=master)](http://travis-ci.org/james/teep) [![Coverage Status](https://coveralls.io/repos/earldouglas/teep/badge.png?branch=master)](https://coveralls.io/r/earldouglas/teep?branch=master)
 
 A JavaScript library for functional programming.
 
