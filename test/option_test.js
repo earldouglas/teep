@@ -33,4 +33,17 @@ exports['option'] = {
     test.equal(teep.option(41).map(inc).toString(), 'some(42)', 'should be 42.');
     test.done();
   },
+  'flatMap': function(test) {
+    function incLift(x) { return teep.option(1 + x); }
+    test.expect(2);
+    test.equal(teep.option().flatMap(incLift).toString(), 'none()', 'should be empty.');
+    test.equal(teep.option(41).flatMap(incLift).toString(), 'some(42)', 'should be 42.');
+    test.done();
+  },
+  'ap': function(test) {
+    test.expect(2);
+    test.equal(teep.option().ap(teep.option(41)).toString(), 'none()', 'should be empty.');
+    test.equal(teep.option(inc).ap(teep.option(41)).toString(), 'some(42)', 'should be 42.');
+    test.done();
+  },
 };

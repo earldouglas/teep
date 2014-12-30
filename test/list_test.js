@@ -29,7 +29,7 @@ exports['list'] = {
 
     test.done();
   },
-   'length': function(test) {
+  'length': function(test) {
     test.expect(3);
 
     test.equal(4, list(0, list(1, list())).concat(list(2, list(3, list()))).length);
@@ -83,6 +83,49 @@ exports['list'] = {
     test.equal(l4.toString(), 'cons(c, cons(b, cons(a, nil)))');
     test.equal(l5.toString(), 'cons(d, cons(c, cons(b, cons(a, nil))))');
     test.equal(l6.toString(), 'cons(d, cons(c, cons(b, cons(a, nil))))');
+
+    test.done();
+  },
+  'map': function(test) {
+    test.expect(3);
+
+    function square(x) {
+      return x * x;
+    }
+
+    var l1 = list();
+    var l2 = list(2);
+    var l3 = list(3, l2);
+
+    var l1s = l1.map(square);
+    var l2s = l2.map(square);
+    var l3s = l3.map(square);
+
+    test.equal(l1s.toString(), 'nil');
+    test.equal(l2s.toString(), 'cons(4, nil)');
+    test.equal(l3s.toString(), 'cons(9, cons(4, nil))');
+
+    test.done();
+  },
+  'flatMap': function(test) {
+    test.expect(3);
+
+    function squareAndRepeat(x) {
+      var s = x * x;
+      return list(s, list(s));
+    }
+
+    var l1 = list();
+    var l2 = list(2);
+    var l3 = list(3, l2);
+
+    var l1s = l1.flatMap(squareAndRepeat);
+    var l2s = l2.flatMap(squareAndRepeat);
+    var l3s = l3.flatMap(squareAndRepeat);
+
+    test.equal(l1s.toString(), 'nil');
+    test.equal(l2s.toString(), 'cons(4, cons(4, nil))');
+    test.equal(l3s.toString(), 'cons(9, cons(9, cons(4, cons(4, nil))))');
 
     test.done();
   },

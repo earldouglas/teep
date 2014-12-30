@@ -231,8 +231,8 @@ A validation created by `invalid` exposes the following fields:
 
 * `valid` - returns false
 * `errors` - returns the array of errors
-* `map(f) - returns a this validation
-* `flatMap(f) - returns this validation
+* `map(f)` - returns a this validation
+* `flatMap(f)` - returns this validation
 * `ap(a)` - if `a` is valid, return this validation, otherwise returns a new (invalid) validation containing the concatenation of this validation's errors with `a`'s errors
 * `toString()`
 
@@ -245,45 +245,6 @@ A validation created by `invalid` exposes the following fields:
 In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. Lint and test your code
 using [Grunt](http://gruntjs.com/).
-
-## Release History
-
-### 0.5.0
-
-* Encapsulate `cons()` and `nil` behind `list()`
-* Function memoization via `memoize(fn)`
-* Lazy function evaluation via `lazy(fn)`
-
-### 0.4.2
-
-* Documentation formatting for npmjs.com
-
-### 0.4.1
-
-* Documentation fixup
-
-### 0.4.0
-
-* Function composition, via `compose(f, g)`
-
-### 0.3.1
-
-* Documentation aggregation
-
-### 0.3.0
-
-* Linked lists, via `cons(head, tail)` and `nil`
-* Function currying, via `curry(f)`
-* Promises aggregation, via `collect(promises, callback)`
-
-### 0.2.0
-
-* Validation, via `valid(value)` and `invalid(errors)`
-* Fix for `option(false)` returning `none()`
-
-### 0.1.2
-
-* Option, via `option(value)` and `option()`
 
 ## License
 Copyright (c) 2014 James Earl Douglas
