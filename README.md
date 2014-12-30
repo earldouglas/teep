@@ -231,8 +231,8 @@ A validation created by `invalid` exposes the following fields:
 
 * `valid` - returns false
 * `errors` - returns the array of errors
-* `map(f) - returns a this validation
-* `flatMap(f) - returns this validation
+* `map(f)` - returns a this validation
+* `flatMap(f)` - returns this validation
 * `ap(a)` - if `a` is valid, return this validation, otherwise returns a new (invalid) validation containing the concatenation of this validation's errors with `a`'s errors
 * `toString()`
 
