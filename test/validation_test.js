@@ -19,10 +19,11 @@ exports['validation'] = {
     test.done();
   },
   'ap': function(test) {
-    test.expect(3);
+    test.expect(4);
     test.equal(teep.valid(inc).ap(teep.valid(41)).toString(), 'valid(42)', 'should be 42.');
     test.equal(teep.valid(inc).ap(teep.invalid(['wat'])).toString(), 'invalid(wat)', 'should be invalid(wat).');
     test.equal(teep.invalid(['wat']).ap(teep.valid(41)).toString(), 'invalid(wat)', 'should be invalid(wat).');
+    test.equal(teep.invalid(['wat']).ap(teep.invalid(['nope'])).toString(), 'invalid(wat,nope)', 'should be invalid(wat).');
     test.done();
   },
 };
