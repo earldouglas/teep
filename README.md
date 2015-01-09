@@ -1,4 +1,4 @@
-# Teep [![Build Status](https://secure.travis-ci.org/earldouglas/teep.png?branch=master)](http://travis-ci.org/james/teep) [![Coverage Status](https://coveralls.io/repos/earldouglas/teep/badge.png?branch=master)](https://coveralls.io/r/earldouglas/teep?branch=master)
+# Teep [![Build Status](https://secure.travis-ci.org/earldouglas/teep.png?branch=master)](http://travis-ci.org/james/teep) [![Coverage Status](https://coveralls.io/repos/earldouglas/teep/badge.png?branch=master)](https://coveralls.io/r/earldouglas/teep?branch=master) [![Codacy Badge](https://www.codacy.com/project/badge/343136a03ffa426b88cb4c535cd6709e)](https://www.codacy.com/public/james_2720/teep)
 
 A JavaScript library for functional programming.
 
