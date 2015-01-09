@@ -24,7 +24,7 @@ var d = c.map(function (x) { return x + 1; }); // some(42)
 
 ## Documentation
 
-### contains(xs, x)
+### array.contains(xs, x)
 
 `contains` takes an array and an element, and returns whether the element
 exists at least once in the array.
@@ -36,7 +36,7 @@ var yep  = contains([1,2,3], 2); // true
 var nope = contains([1,2,3], 4); // false
 ```
 
-### compose(f, g)
+### fn.compose(f, g)
 
 [*demo*](http://jsfiddle.net/earldouglas/8q1znL7n/)
 
@@ -67,7 +67,7 @@ var five = compose(inc, square)(2); // inc(square(2)) == (2 ^ 2) + 1
 
 **g**: `function`, a unary function
 
-### curry(f, args)
+### fn.curry(f, args)
 
 `curry` takes an n-ary function `f` and an optional array of arguments, and
 returns a curried version of `f`, comprised of *n* nested unary functions
@@ -100,7 +100,7 @@ var fortyTwo = curry(mathemagic)(2)(20)(1);
 
 **args**: `array`, [optional] arguments to apply to `f`
 
-### memoize(f, cache)
+### fn.memoize(f, cache)
 
 `memoize` takes a function and an optional cache implementation, and
 memoizes the function by backing it with the cache, if supplied, or a simple
@@ -123,7 +123,7 @@ var fastResult = cheapFn(42); // cheap cache lookup the second time
 
 **cache**: `object`, [optional] a cache object with get(k) and put(k,v) functions
 
-### lazy(f, cache)
+### fn.lazy(f, cache)
 
 `lazy` takes a function and an optional cache implementation, and creates a
 function that, given input arguments, returns a lazy evaluator that will
@@ -188,7 +188,7 @@ An option instance exposes the following fields:
 
 **value**: `any`, [optional] the value to wrap in an option
 
-### collect(promises, callback)
+### promise.collect(promises, callback)
 
 Given an array of promises and a callback, passes the result of each promise
 (in order) as an argument to the callback, and returns a single promise that
@@ -217,7 +217,7 @@ p is congruent to `Promise.resolve(2 * (20 + 1))`, or `Promise.resolve(42)`
 
 **callback**: `function`, a function that takes as arguments the results of the promises
 
-### valid(value)
+### validation.valid(value)
 
 `valid` constructs a "validation" representing a valid value.
 
@@ -234,7 +234,7 @@ A validation created by `valid` exposes the following fields:
 
 **value**: `any`, a valid value to wrap in a validation
 
-### invalid(errors)
+### validation.invalid(errors)
 
 `invalid` constructs a "validation" representing an invalid value, and
 containing an array of errors.

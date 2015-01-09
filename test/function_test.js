@@ -3,6 +3,7 @@
 if (!global.Promise) { global.Promise = require('bluebird'); }
 
 var teep = require('../teep.js');
+var fn = teep.fn;
 
 function add(x, y) {
   return x + y;
@@ -46,10 +47,10 @@ exports['fn'] = {
       return x * x;
     }
 
-    var nine = teep.compose(square, inc)(2);
+    var nine = fn.compose(square, inc)(2);
     test.equal(nine, 9);
 
-    var five = teep.compose(inc, square)(2);
+    var five = fn.compose(inc, square)(2);
     test.equal(five, 5);
 
     test.done();
@@ -57,11 +58,11 @@ exports['fn'] = {
   'curry': function(test) {
     test.expect(2);
 
-    var add2 = teep.curry(add)(2);
+    var add2 = fn.curry(add)(2);
     var five = add2(3);
     test.equal(five, 5);
 
-    var fortyTwo = teep.curry(mathemagic)(2)(20)(1);
+    var fortyTwo = fn.curry(mathemagic)(2)(20)(1);
     test.equal(fortyTwo, 42);
 
     test.done();
@@ -69,7 +70,7 @@ exports['fn'] = {
   'memoize': function(test) {
     test.expect(3);
 
-    var piMemo = teep.memoize(pi);
+    var piMemo = fn.memoize(pi);
 
     var N = 1000000;
     var est1 = time(function() { return piMemo(N); });
@@ -85,7 +86,7 @@ exports['fn'] = {
     test.expect(3);
 
     var N = 1000000;
-    var piLazy = teep.lazy(pi)(N);
+    var piLazy = fn.lazy(pi)(N);
 
     var est1 = time(function() { return piLazy.get(); });
     var est2 = time(function() { return piLazy.get(); });
