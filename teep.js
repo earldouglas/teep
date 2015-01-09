@@ -16,6 +16,7 @@ var validation = require('./' + lib + '/validation');
 var list       = require('./' + lib + '/list');
 var promise    = require('./' + lib + '/promise');
 var fn         = require('./' + lib + '/function');
+var array      = require('./' + lib + '/array');
 
 exports.option    = option.option;
 exports.valid     = validation.valid;
@@ -26,3 +27,4 @@ exports.curry     = fn.curry;
 exports.compose   = fn.compose;
 exports.memoize   = fn.memoize;
 exports.lazy      = fn.lazy;
+exports.array     = array;

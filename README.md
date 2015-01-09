@@ -24,6 +24,18 @@ var d = c.map(function (x) { return x + 1; }); // some(42)
 
 ## Documentation
 
+### contains(xs, x)
+
+`contains` takes an array and an element, and returns whether the element
+exists at least once in the array.
+
+*Example:*
+
+```javascript
+var yep  = contains([1,2,3], 2); // true
+var nope = contains([1,2,3], 4); // false
+```
+
 ### compose(f, g)
 
 [*demo*](http://jsfiddle.net/earldouglas/8q1znL7n/)
