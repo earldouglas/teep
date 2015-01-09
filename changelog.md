@@ -1,3 +1,8 @@
+### 0.6.0
+
+* Array searching via `array.contains(xs, x)`
+* 100% code coverage
+
 ### 0.5.0
 
 * Encapsulate `cons()` and `nil` behind `list()`
