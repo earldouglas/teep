@@ -2,33 +2,9 @@
 
 var teep = require('../teep.js');
 var list = teep.list;
+var jsc = require('jsverify');
 
-exports['list'] = {
-  'perf': function(test) {
-    test.expect(0);
-
-    var iterations = 1000000;
-
-    console.log('');
-
-    console.time('push');
-    var xs = [];
-    for (var i = 0; i < iterations; i++) {
-        xs.push(i);
-    }
-    console.timeEnd('push');
-
-    console.time('cons');
-    var ys = list();
-    for (var j = 0; j < iterations; j++) {
-        ys = list(i, ys);
-    }
-    console.timeEnd('cons');
-
-    console.log('');
-
-    test.done();
-  },
+exports.list = {
   'length': function(test) {
     test.expect(3);
 

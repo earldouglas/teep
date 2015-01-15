@@ -2,49 +2,61 @@
 
 var teep = require('../teep.js');
 var option = teep.option;
+var jsc = require('jsverify');
 
-function inc(x) { return 1 + x; }
+function get(x) {
+  var y = null;
+  x.map(function (z) { y = z; });
+  return y;
+}
 
-exports['option'] = {
-  'option()': function(test) {
-    test.expect(2);
-    test.equal(option().empty, true, 'should be empty.');
-    test.equal(option().toString(), 'none()', 'should be none().');
+exports.option = {
+  'option()': function (test) {
+    test.strictEqual(get(option()), null);
     test.done();
   },
-  'option(42)': function(test) {
-    test.expect(2);
-    test.equal(option(42).empty, false, 'should not be empty.');
-    test.equal(option(42).toString(), 'some(42)', 'should be some(42).');
+  'option(<falsy>)': function (test) {
+    jsc.assert(jsc.forall('falsy', function (x) {
+      var o = option(x);
+      var y = get(o);
+      return o.empty || y === false || y === 0 || y === '';
+    }));
     test.done();
   },
-  'option(false)': function(test) {
-    test.expect(1);
-    test.equal(option(false).toString(), 'some(false)', 'should not be empty.');
+  'option(<value>)': function (test) {
+    test.strictEqual(get(option()), null);
+    jsc.assert(jsc.forall('value', function (x) {
+      return get(option(x)) === x;
+    }));
     test.done();
   },
-  'option(null)': function(test) {
-    test.expect(1);
-    test.equal(option(null).toString(), 'none()', 'should be empty.');
+  'toString()': function (test) {
+    jsc.assert(jsc.forall('number', function (x) {
+      return option().toString() === 'none()' &&
+             option(x).toString() === 'some(' + x + ')';
+    }));
     test.done();
   },
-  'map': function(test) {
-    test.expect(2);
-    test.equal(option().map(inc).toString(), 'none()', 'should be empty.');
-    test.equal(option(41).map(inc).toString(), 'some(42)', 'should be 42.');
+  'map()': function (test) {
+    jsc.assert(jsc.forall('number -> number', 'number', function (f, x) {
+      return option().map(f).toString() === 'none()' &&
+             get(option(x).map(f)) === get(option(f(x)));
+    }));
     test.done();
   },
-  'flatMap': function(test) {
-    function incLift(x) { return option(1 + x); }
-    test.expect(2);
-    test.equal(option().flatMap(incLift).toString(), 'none()', 'should be empty.');
-    test.equal(option(41).flatMap(incLift).toString(), 'some(42)', 'should be 42.');
+  'flatMap()': function (test) {
+    function liftM0(f) { return function (x) { return option(f(x)); }; }
+    jsc.assert(jsc.forall('number -> number', 'number', function (f, x) {
+      return option().flatMap(liftM0(f)).toString() === 'none()' &&
+             get(option(x).flatMap(liftM0(f))) === get(liftM0(f)(x));
+    }));
     test.done();
   },
-  'ap': function(test) {
-    test.expect(2);
-    test.equal(option().ap(option(41)).toString(), 'none()', 'should be empty.');
-    test.equal(option(inc).ap(option(41)).toString(), 'some(42)', 'should be 42.');
+  'ap()': function (test) {
+    jsc.assert(jsc.forall('number -> number', 'number', function (f, x) {
+      return option().ap(option(x)).toString() === 'none()' &&
+             get(option(f).ap(option(x))) === f(x);
+    }));
     test.done();
   },
 };
