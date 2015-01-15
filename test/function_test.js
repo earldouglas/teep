@@ -4,26 +4,7 @@ if (!global.Promise) { global.Promise = require('bluebird'); }
 
 var teep = require('../teep.js');
 var fn = teep.fn;
-
-function add(x, y) {
-  return x + y;
-}
-
-function mathemagic(x, y, z) {
-  return x * (y + z);
-}
-
-function pi(n) {
-  var sum = 0;
-  for (var k = 0; k < n; k++) {
-    sum = sum + Math.pow(-1, k) / (2 * k + 1);
-  }
-  return 4 * sum;
-}
-
-function round2(x) {
-  return Math.round(x * 100) / 100;
-}
+var jsc = require('jsverify');
 
 function time(f) {
   var start = (new Date()).getTime();
@@ -35,66 +16,53 @@ function time(f) {
   };
 }
 
-exports['fn'] = {
+function slow(f) {
+  return function () {
+    var h = 0;
+    for (var i = 0; i < 1000000; i++) {
+      h = h + 1;
+    }
+    return f.apply(null, arguments);
+  };
+}
+
+
+exports.fn = {
   'compose': function(test) {
-    test.expect(2);
-
-    function inc(x) {
-      return x + 1;
-    }
-
-    function square(x) {
-      return x * x;
-    }
-
-    var nine = fn.compose(square, inc)(2);
-    test.equal(nine, 9);
-
-    var five = fn.compose(inc, square)(2);
-    test.equal(five, 5);
-
+    jsc.assert(jsc.forall(
+      'number -> number', 'number -> number', 'number',
+      function (f, g, x) {
+        return fn.compose(f, g)(x) === f(g(x));
+      }
+    ));
     test.done();
   },
   'curry': function(test) {
-    test.expect(2);
-
-    var add2 = fn.curry(add)(2);
-    var five = add2(3);
-    test.equal(five, 5);
-
-    var fortyTwo = fn.curry(mathemagic)(2)(20)(1);
-    test.equal(fortyTwo, 42);
-
+    jsc.assert(jsc.forall(
+      'number -> number -> number', 'number', 'number',
+      function (f, x, y) {
+        var uncurried = function(x, y) { return f(x, y); };
+        return fn.curry(uncurried)(x)(y) === f(x, y);
+      }
+    ));
     test.done();
   },
   'memoize': function(test) {
-    test.expect(3);
-
-    var piMemo = fn.memoize(pi);
-
-    var N = 1000000;
-    var est1 = time(function() { return piMemo(N); });
-    var est2 = time(function() { return piMemo(N); });
-
-    test.equal(round2(est1.result), 3.14);
-    test.equal(round2(est2.result), 3.14);
-    test.equal((est1.time > (est2.time + 1) * 10), true);
-
+    jsc.assert(jsc.forall( 'number -> number', 'number', function (f, x) {
+      var memoized = fn.memoize(slow(f));
+      var y1 = time(function() { return memoized(x); });
+      var y2 = time(function() { return memoized(x); });
+      return f(x) === y1.result && f(x) === y2.result && y1.time > y2.time;
+    }));
     test.done();
   },
   'lazy': function(test) {
-    test.expect(3);
-
-    var N = 1000000;
-    var piLazy = fn.lazy(pi)(N);
-
-    var est1 = time(function() { return piLazy.get(); });
-    var est2 = time(function() { return piLazy.get(); });
-
-    test.equal(round2(est1.result), 3.14);
-    test.equal(round2(est2.result), 3.14);
-    test.equal((est1.time > (est2.time + 1) * 10), true);
-
+    jsc.assert(jsc.forall( 'number -> number', 'number', function (f, x) {
+      var lazied = fn.lazy(slow(f))(x);
+      var y1 = time(function() { return lazied.get(); });
+      var y2 = time(function() { return lazied.get(); });
+      return f(x) === y1.result && f(x) === y2.result && y1.time > y2.time;
+    }));
     test.done();
   },
 };
