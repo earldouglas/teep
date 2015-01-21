@@ -2,7 +2,6 @@
 
 var teep = require('../teep.js');
 var list = teep.list;
-var jsc = require('jsverify');
 
 exports.list = {
   'length': function(test) {
