@@ -78,10 +78,10 @@ where the arity of `f` is *n*.
 ```javascript
 function add(x, y) {
   return x + y;
-};
+}
 
 var add2 = curry(add)(2);
-var five = add2(3);
+var five = add2(3); // 2 + 3 == 5
 ```
 
 *Example:*
@@ -89,9 +89,9 @@ var five = add2(3);
 ```javascript
 function mathemagic(x, y, z) {
   return x * (y + z);
-};
+}
 
-var fortyTwo = curry(mathemagic)(2)(20)(1);
+var fortyTwo = curry(mathemagic)(2)(20)(1); // 2 * (20 + 1) == 42
 ```
 
 **Parameters**
