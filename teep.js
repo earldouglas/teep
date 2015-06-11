@@ -9,6 +9,8 @@
 'use strict';
 
 var edc;
+var exports;
+
 (function (edc) {
 
   var array = {
@@ -215,9 +217,11 @@ var edc;
     future: future,
   };
 
-  for (var i in edc.teep) {
-    if (edc.teep.hasOwnProperty(i)) {
-      exports[i] = edc.teep[i];
+  if (exports) {
+    for (var i in edc.teep) {
+      if (edc.teep.hasOwnProperty(i)) {
+        exports[i] = edc.teep[i];
+      }
     }
   }
 
