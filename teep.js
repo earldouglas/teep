@@ -143,7 +143,6 @@ var edc;
                    }
       };
     };
-    
     if (tail === undefined || tail === null) {
       return list(head, _nil);
     } else if (head === undefined || head === null) {
@@ -166,6 +165,46 @@ var edc;
     }
   };
 
+  var future = function (f) {
+    return {
+      apply: function (k) {
+        return f(k);
+      },
+      map: function (g) {
+        return future (function (k) {
+          return f(function (x) {
+            return k(g(x));
+          });
+        });
+      },
+      flatMap: function (g) {
+        return future (function (k) {
+          return f(function (x) {
+            return g(x).apply(k);
+          });
+        });
+      },
+      sequence: function (f2) {
+        var xs = [];
+        return future(function (k) {
+          var kk = function() {
+            if (xs.length === 2) {
+              k(xs);
+            }
+          };
+          f(function (x) {
+            xs.unshift(x);
+            kk();
+          });
+          f2.apply(function (x) {
+            xs.push(x);
+            kk();
+          });
+        });
+      }
+    };
+  };
+
   edc.teep = {
     array: array,
     fn: fn,
@@ -173,6 +212,7 @@ var edc;
     validation: validation,
     list: list,
     promise: promise,
+    future: future,
   };
 
   for (var i in edc.teep) {
