@@ -26,15 +26,18 @@
     "node": ">= 0.10.0"
   },
   "scripts": {
-    "test": "nodeunit test",
-    "coveralls": "jscoverage teep.js teep.js && nodeunit --reporter=lcov test | coveralls"
+    "build": "tsc src/teep.ts --outDir .",
+    "test": "npm run-script build && istanbul cover _mocha -- -R spec",
+    "coveralls": "npm run-script test && cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
     "bluebird": "2.2.2",
     "coveralls": "2.11.2",
-    "jscoverage": "0.5.9",
+    "istanbul": "0.3.5",
+    "mocha": "2.2.5",
+    "mocha-lcov-reporter": "0.0.1",
     "nodeunit": "0.9.0",
-    "jsverify": "0.4.3"
+    "typescript": "1.5.0-beta"
   },
   "keywords": [
     "functional",
