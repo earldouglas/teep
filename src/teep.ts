@@ -216,11 +216,11 @@ module edc {
             }
           };
           f(function (x) {
-            xs.unshift(x);
+            xs[0] = x;
             kk();
           });
           f2.apply(function (x) {
-            xs.push(x);
+            xs[1] = x;
             kk();
           });
         });
