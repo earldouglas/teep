@@ -16,11 +16,8 @@ describe('examples', function () {
 
   describe('array', function () {
     it('contains', function () {
-      var contains = teep.array.contains;
-
-      var yep  = contains([1,2,3], 2); // true
-      var nope = contains([1,2,3], 4); // false
-
+      var yep  = teep.array.contains([1,2,3], 2); // true
+      var nope = teep.array.contains([1,2,3], 4); // false
       assert.equal(yep, true);
       assert.equal(nope, false);
     });
@@ -28,8 +25,6 @@ describe('examples', function () {
 
   describe('fn', function () {
     it('compose', function () {
-      var compose = teep.fn.compose;
-
       function inc(x) {
         return x + 1;
       }
@@ -38,9 +33,8 @@ describe('examples', function () {
         return x * x;
       }
 
-      var nine = compose(square, inc)(2); // square(inc(2)) == (2 + 1) ^ 2
-      var five = compose(inc, square)(2); // inc(square(2)) == (2 ^ 2) + 1
-
+      var nine = teep.fn.compose(square, inc)(2); // square(inc(2)) == (2 + 1) ^ 2
+      var five = teep.fn.compose(inc, square)(2); // inc(square(2)) == (2 ^ 2) + 1
       assert.equal(nine, 9);
       assert.equal(five, 5);
     });
@@ -48,20 +42,18 @@ describe('examples', function () {
 
   describe('fn', function () {
     it('curry', function () {
-      var curry = teep.fn.curry;
-
       function add(x, y) {
         return x + y;
       }
 
-      var add2 = curry(add)(2);
+      var add2 = teep.fn.curry(add)(2);
       var five = add2(3); // 2 + 3 == 5
 
       function mathemagic(x, y, z) {
         return x * (y + z);
       }
 
-      var fortyTwo = curry(mathemagic)(2)(20)(1); // 2 * (20 + 1) == 42
+      var fortyTwo = teep.fn.curry(mathemagic)(2)(20)(1); // 2 * (20 + 1) == 42
 
       assert.equal(five, 5);
       assert.equal(fortyTwo, 42);
@@ -70,8 +62,6 @@ describe('examples', function () {
 
   describe('fn', function () {
     it('memoize', function () {
-      var memoize = teep.fn.memoize;
-
       function expensiveFn(n) {
         for (var i = 0; i < 10000; i++) {
           for (var j = 0; j < 10000; j++) {
@@ -81,7 +71,7 @@ describe('examples', function () {
         return n;
       }
 
-      var cheapFn = memoize(expensiveFn);
+      var cheapFn = teep.fn.memoize(expensiveFn);
 
       var t1 = Date.now();
       var slowResult = cheapFn(42); // expensive computation the first time
@@ -98,8 +88,6 @@ describe('examples', function () {
     });
 
     it('lazy', function () {
-      var lazy = teep.fn.lazy;
-  
       function expensiveFn(n) {
         for (var i = 0; i < 10000; i++) {
           for (var j = 0; j < 10000; j++) {
@@ -110,7 +98,7 @@ describe('examples', function () {
       }
   
       var t1 = Date.now();
-      var lazyVal = lazy(expensiveFn)(42); // lazily apply 42 -- no computation yet
+      var lazyVal = teep.fn.lazy(expensiveFn)(42); // lazily apply 42 -- no computation yet
       var t2 = Date.now();
   
       var t3 = Date.now();
@@ -131,47 +119,43 @@ describe('examples', function () {
   });
 
   describe('option', function () {
-    var option = teep.option;
-
     var maybe42 = function (x) {
       if (x === 42) {
-        return option(x);
+        return teep.option(x);
       } else {
-        return option();
+        return teep.option();
       }
     };
 
     it('constructor', function () {
-      assert(option().empty);
-      assert(option(null).empty);
-      assert(option(undefined).empty);
-      assert(option(42).empty === false);
+      assert(teep.option().empty);
+      assert(teep.option(null).empty);
+      assert(teep.option(undefined).empty);
+      assert(teep.option(42).empty === false);
     });
 
     it('map', function () {
-      assert.equal('none()', option().map(times(2)).toString());
-      assert.equal('some(42)', option(21).map(times(2)).toString());
+      assert.equal('none()', teep.option().map(times(2)).toString());
+      assert.equal('some(42)', teep.option(21).map(times(2)).toString());
     });
 
     it('flatMap', function () {
-      assert.equal('none()', option().flatMap(maybe42).toString());
-      assert.equal('none()', option(41).flatMap(maybe42).toString());
-      assert.equal('some(42)', option(42).flatMap(maybe42).toString());
+      assert.equal('none()', teep.option().flatMap(maybe42).toString());
+      assert.equal('none()', teep.option(41).flatMap(maybe42).toString());
+      assert.equal('some(42)', teep.option(42).flatMap(maybe42).toString());
     });
 
     it('ap', function () {
-      assert.equal('none()', option().ap(option()).toString());
-      assert.equal('none()', option().ap(option(times(2))).toString());
-      assert.equal('none()', option(21).ap(option()).toString());
-      assert.equal('some(42)', option(21).ap(option(times(2))).toString());
+      assert.equal('none()', teep.option().ap(teep.option()).toString());
+      assert.equal('none()', teep.option().ap(teep.option(times(2))).toString());
+      assert.equal('none()', teep.option(21).ap(teep.option()).toString());
+      assert.equal('some(42)', teep.option(21).ap(teep.option(times(2))).toString());
     });
   });
 
   describe('promise', function () {
     it('collect', function (done) {
-      var collect = teep.promise.collect;
-  
-      var p = collect([
+      var p = teep.promise.collect([
         Promise.resolve(2),
         function () { return Promise.resolve(20); },
         Promise.resolve(1)
@@ -187,26 +171,23 @@ describe('examples', function () {
   });
 
   describe('validation', function () {
-    var valid = teep.validation.valid;
-    var invalid = teep.validation.invalid;
-
     it('map', function () {
-      assert.equal('valid(42)', valid(21).map(times(2)).toString());
-      assert.equal('valid(42)', valid(times(2)(21)).toString());
-      assert.equal('invalid(wat)', invalid(['wat']).map(times(2)).toString());
+      assert.equal('valid(42)', teep.validation.valid(21).map(times(2)).toString());
+      assert.equal('valid(42)', teep.validation.valid(times(2)(21)).toString());
+      assert.equal('invalid(wat)', teep.validation.invalid(['wat']).map(times(2)).toString());
     });
 
     it('flatMap', function () {
-      function liftM0(f) { return function (x) { return valid(f(x)); }; }
-      assert.equal('valid(42)', valid(21).flatMap(liftM0(times(2))).toString());
-      assert.equal('invalid(wat)', invalid(['wat']).flatMap(liftM0(times(2))).toString());
+      function liftM0(f) { return function (x) { return teep.validation.valid(f(x)); }; }
+      assert.equal('valid(42)', teep.validation.valid(21).flatMap(liftM0(times(2))).toString());
+      assert.equal('invalid(wat)', teep.validation.invalid(['wat']).flatMap(liftM0(times(2))).toString());
     });
 
     it('ap', function () {
-      assert.equal('valid(42)', valid(times(2)).ap(valid(21)).toString());
-      assert.equal('invalid(wat)', invalid(['wat']).ap(valid(21)).toString());
-      assert.equal('invalid(wat)', valid(times(2)).ap(invalid(['wat'])).toString());
-      assert.equal('invalid(wat,lol)', invalid(['wat']).ap(invalid(['lol'])).toString());
+      assert.equal('valid(42)', teep.validation.valid(times(2)).ap(teep.validation.valid(21)).toString());
+      assert.equal('invalid(wat)', teep.validation.invalid(['wat']).ap(teep.validation.valid(21)).toString());
+      assert.equal('invalid(wat)', teep.validation.valid(times(2)).ap(teep.validation.invalid(['wat'])).toString());
+      assert.equal('invalid(wat,lol)', teep.validation.invalid(['wat']).ap(teep.validation.invalid(['lol'])).toString());
     });
   });
 
@@ -309,8 +290,6 @@ describe('examples', function () {
 
 
   describe('future', function () {
-
-    var future = teep.future;
     var async = function(x) {
       return function (k) {
         return k(x);
@@ -319,7 +298,7 @@ describe('examples', function () {
     
     var asyncF = function (f) {
       return function (x) {
-        return future(function (k) {
+        return teep.future(function (k) {
           return k(f(x));
         });
       };
@@ -334,15 +313,15 @@ describe('examples', function () {
     };
 
     it('apply', function (done) {
-      future(async(42)).apply(verify(done));
+      teep.future(async(42)).apply(verify(done));
     });
 
     it('map', function (done) {
-      future(async(21)).map(times(2)).apply(verify(done));
+      teep.future(async(21)).map(times(2)).apply(verify(done));
     });
 
     it('flatMap', function (done) {
-      future(async(21)).flatMap(asyncF(times(2))).apply(verify(done));
+      teep.future(async(21)).flatMap(asyncF(times(2))).apply(verify(done));
     });
 
     it('sequence', function (done) {
@@ -353,7 +332,7 @@ describe('examples', function () {
           }
         };
       };
-      future(async(42)).sequence(future(async(43))).apply(verify);
+      teep.future(async(42)).sequence(teep.future(async(43))).apply(verify);
     });
 
   });
