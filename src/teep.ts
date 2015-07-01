@@ -115,63 +115,81 @@ module edc {
     }
   }
 
+  export interface Validation<A> {
+    valid    : boolean;
+    map      : <B>(f: (A) => B) => Validation<B>;
+    flatMap  : <B>(f: (A) => Validation<B>) => Validation<B>;
+    ap       : <B>(x: Validation<(A) => B>) => Validation<B>;
+  }
+
+  class Valid<A> implements Validation<A> {
+    value: A;
+    constructor(value: A) {
+      this.value = value;
+    }
+    valid    = true;
+    map      = (f) => { return validation.valid(f(this.value)); };
+    flatMap  = (f) => { return f(this.value); };
+    ap       = (a) => { return a.map(this.value); };
+    toString = () => { return 'valid(' + this.value.toString() + ')'; };
+  }
+
+  class Invalid<A> implements Validation<A> {
+    errors: Array<String>;
+    constructor(errors: Array<String>) {
+      this.errors = errors;
+    }
+    valid    = false;
+    map      = (f) => { return this; };
+    flatMap  = (f) => { return this; };
+    ap       = (a) => { return a.valid ? this : validation.invalid(this.errors.concat(a.errors)); };
+    toString = () => { return 'invalid(' + this.errors.toString() + ')'; };
+  }
+
   var validation = {
-    valid: function (value) {
-      return {
-        valid    : true,
-        value    : value,
-        map      : function(f) { return validation.valid(f(value)); },
-        flatMap  : function(f) { return f(value); },
-        ap       : function(a) { return a.map(value); },
-        toString : function()  { return 'valid(' + value.toString() + ')'; }
-      };
-    },
-    invalid: function (errors) {
-      var self = {
-        valid    : false,
-        errors   : errors,
-        map      : function() { return self; },
-        flatMap  : function() { return self; },
-        ap       : function(a) {
-                     if (a.valid) {
-                       return self;
-                     } else {
-                       return validation.invalid(errors.concat(a.errors));
-                     }
-                   },
-        toString : function() { return 'invalid(' + errors.toString() + ')'; }
-      };
-      return self;
-    },
+    valid: <A>(value: A) => { return new Valid(value); },
+    invalid: (errors: Array<String>) => { return new Invalid(errors); },
   };
 
-  var list = function (head, tail) {
-    var _nil = {
-      length   : 0,
-      map      : function() { return this; },
-      flatMap  : function() { return this; },
-      concat   : function(l) { return l; },
-      toString : function() { return 'nil'; }
-    };
-    var _cons = function (head, tail) {
-      return {
-        head     : head,
-        tail     : tail,
-        length   : 1 + tail.length,
-        map      : function(f) { return _cons(f(head), tail.map(f)); },
-        flatMap  : function(f) { return f(head).concat(tail.flatMap(f)); },
-        concat   : function(l) { return _cons(head, tail.concat(l)); },
-        toString : function() {
-                     return 'cons(' + head + ', ' + tail.toString() + ')';
-                   }
-      };
-    };
+  export interface List<A> {
+    length   : number;
+    map      : <B>(f: (A) => B) => List<B>;
+    flatMap  : <B>(f: (A) => List<B>) => List<B>;
+    concat   : (l: List<A>) => List<A>;
+  }
+
+  class Nil<A> implements List<A> {
+    length   = 0;
+    map      = () => { return this; };
+    flatMap  = () => { return this; };
+    concat   = (l) => { return l; };
+    toString = () => { return 'nil'; };
+  }
+
+  class Cons<A> implements List<A> {
+    head: A;
+    tail: List<A>;
+    length: number;
+    constructor(head: A, tail: List<A>) {
+      this.head = head;
+      this.tail = tail;
+      this.length = 1 + this.tail.length;
+    }
+    map      = (f) => { return new Cons(f(this.head), this.tail.map(f)); };
+    flatMap  = (f) => { return f(this.head).concat(this.tail.flatMap(f)); };
+    concat   = (l) => { return new Cons(this.head, this.tail.concat(l)); };
+    toString = () => { return 'cons(' + this.head + ', ' + this.tail.toString() + ')'; };
+  }
+
+  var _nil = new Nil();
+
+  var list = <A>(head: A, tail: List<A>) => {
     if (tail === undefined || tail === null) {
       return list(head, _nil);
     } else if (head === undefined || head === null) {
       return tail;
     } else {
-      return _cons(head, tail);
+      return new Cons(head, tail);
     }
   };
 
@@ -188,45 +206,72 @@ module edc {
     }
   };
 
-  var future = function (f) {
-    return {
-      apply: function (k) {
-        return f(k);
-      },
-      map: function (g) {
-        return future (function (k) {
-          return f(function (x) {
-            return k(g(x));
-          });
-        });
-      },
-      flatMap: function (g) {
-        return future (function (k) {
-          return f(function (x) {
-            return g(x).apply(k);
-          });
-        });
-      },
-      sequence: function (f2) {
-        var xs = [];
-        return future(function (k) {
-          var kk = function() {
-            if (xs.length === 2) {
-              k(xs);
-            }
-          };
-          f(function (x) {
-            xs[0] = x;
-            kk();
-          });
-          f2.apply(function (x) {
-            xs[1] = x;
-            kk();
-          });
-        });
-      }
+  class Reader<A,B> {
+    f: (A) => B;
+    constructor(f: (A) => B) {
+      this.f = f;
+    }
+    apply(a: A): B {
+      return this.f(a);
     };
-  };
+    map<C>(g: (B) => C): Reader<A,C> {
+      return new Reader((a) => {
+        return g(this.f(a));
+      });
+    };
+    flatMap<C>(g: (B) => Reader<A,C>): Reader<A,C> {
+      return new Reader((a) => {
+        return g(this.f(a)).apply(a);
+      });
+    };
+  }
+
+  var reader = <A,B>(f: (A) => B) => { return new Reader(f); }
+
+  class Future<A> {
+    f: (k: (A) => any) => any;
+    constructor(f) {
+      this.f = f;
+    }
+    apply(k: (A) => any): void {
+      this.f(k);
+    };
+    map<B>(g: (A) => B): Future<B> {
+      return new Future((k: (B) => any) => {
+        return this.f((a: A) => {
+          k(g(a));
+        });
+      });
+    };
+    flatMap<B>(g: (A) => Future<B>): Future<B> {
+      return new Future((k: (B) => any) => {
+        return this.f((a: A) => {
+          g(a).apply(k);
+        });
+      });
+    };
+    sequence<B>(f2: Future<B>): Future<(A) => B> {
+      var a: A;
+      var b: B;
+      return new Future((k: (A) => (B) => any) => {
+        var kk = function () {
+          if (a !== undefined && b !== undefined) {
+            k(a)(b);
+          }
+        };
+        this.f((x: A) => {
+          a = x;
+          kk();
+        });
+        f2.apply((x: B) => {
+          b = x;
+          kk();
+        });
+      });
+    };
+  }
+
+  var future = <A>(f: (A) => any) => { return new Future(f); }
 
   export var teep = {
     array: array,
@@ -235,6 +280,7 @@ module edc {
     validation: validation,
     list: list,
     promise: promise,
+    reader: reader,
     future: future,
   };
 

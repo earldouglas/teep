@@ -283,6 +283,31 @@ describe('examples', function () {
 
   });
 
+  describe('reader', function () {
+
+    var times = function (x) {
+      return function (y) {
+        return x * y;
+      };
+    };
+
+    it('apply', function () {
+      assert.equal(42, teep.reader(times(7)).apply(6));
+    });
+
+    it('map', function () {
+      assert.equal(42, teep.reader(times(2)).map(times(3)).apply(7));
+    });
+
+    it('flatMap', function () {
+      assert.equal(72, teep.reader(times(2)).flatMap(function (x) {
+        return teep.reader(times(x));
+      }).apply(6));
+    });
+
+  });
+
+
   describe('future', function () {
 
     var future = teep.future;
@@ -321,10 +346,12 @@ describe('examples', function () {
     });
 
     it('sequence', function (done) {
-      var verify = function (ys) {
-        if (42 === ys[0] && 43 === ys[1]) {
-          done();
-        }
+      var verify = function (a) {
+        return function (b) {
+          if (42 === a && 43 === b) {
+            done();
+          }
+        };
       };
       future(async(42)).sequence(future(async(43))).apply(verify);
     });
