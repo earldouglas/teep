@@ -253,6 +253,31 @@ var edc;
         return Future;
     })();
     var future = function (f) { return new Future(f); };
+    var ReaderT = (function () {
+        function ReaderT(f) {
+            this.f = f;
+        }
+        ReaderT.prototype.apply = function (a) {
+            return this.f(a);
+        };
+        ;
+        ReaderT.prototype.map = function (g) {
+            var _this = this;
+            return new ReaderT(function (a) {
+                return _this.f(a).map(g);
+            });
+        };
+        ;
+        ReaderT.prototype.flatMap = function (g) {
+            var _this = this;
+            return new ReaderT(function (a) {
+                return _this.f(a).map(g).flatMap(function (r) { return r.apply(a); });
+            });
+        };
+        ;
+        return ReaderT;
+    })();
+    var readerT = function (f) { return new ReaderT(f); };
     edc.teep = {
         array: array,
         fn: fn,
@@ -261,7 +286,8 @@ var edc;
         list: list,
         promise: promise,
         reader: reader,
-        future: future
+        future: future,
+        readerT: readerT
     };
     var setExports = function () {
         for (var i in edc.teep) {

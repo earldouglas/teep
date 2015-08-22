@@ -288,7 +288,6 @@ describe('examples', function () {
 
   });
 
-
   describe('future', function () {
     var async = function(x) {
       return function (k) {
@@ -333,6 +332,52 @@ describe('examples', function () {
         };
       };
       teep.future(async(42)).sequence(teep.future(async(43))).apply(verify);
+    });
+
+  });
+
+  describe('readerT', function () {
+
+    var db = {
+      answer: 42,
+    };
+
+    var getAnswer = function (db) {
+      return teep.future(function (k) {
+        return k(db.answer);
+      });
+    };
+
+    function addToAnswer(x) {
+      return teep.readerT(function (db) {
+        return teep.future(function (k) {
+          return k(db.answer + x);
+        });
+      });
+    };
+
+    function verify(x, done) {
+      return function (y) {
+        if (x === y) {
+          done();
+        }
+      };
+    };
+
+    it('apply', function (done) {
+      teep.readerT(getAnswer).apply(db).apply(verify(42, done));
+    });
+
+    it('map', function (done) {
+      teep.readerT(getAnswer).map(function (x) {
+        return x + 1;
+      }).apply(db).apply(verify(43, done));
+    });
+
+    it('flatMap', function (done) {
+      teep.readerT(getAnswer).flatMap(function (x) {
+        return addToAnswer(x + 1);
+      }).apply(db).apply(verify(85, done));
     });
 
   });
