@@ -15,12 +15,7 @@
   "bugs": {
     "url": "https://github.com/earldouglas/teep/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/earldouglas/teep/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "main": "teep",
   "engines": {
     "node": ">= 0.10.0"
