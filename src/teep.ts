@@ -26,7 +26,7 @@ module edc {
     put: (A, B) => void;
   }
 
-  class DumbCache<A,B> implements Cache<A,B> {
+  class DumbCache<A,B> {
     cache = {};
     get = (k) => { return this.cache[k]; };
     put = (k,v) => { this.cache[k] = v; };
@@ -78,7 +78,12 @@ module edc {
     },
   };
 
-  export interface Option<A> {
+  export interface Monad<A> {
+    map: <B>(f: (A) => B) => Monad<B>;
+    flatMap: <B>(f: (A) => Monad<B>) => Monad<B>;
+  }
+
+  export interface Option<A> extends Monad<A> {
     empty    : boolean;
     map      : <B>(f: (A) => B) => Option<B>;
     flatMap  : <B>(f: (A) => Option<B>) => Option<B>;
@@ -115,7 +120,7 @@ module edc {
     }
   }
 
-  export interface Validation<A> {
+  export interface Validation<A> extends Monad<A> {
     valid    : boolean;
     map      : <B>(f: (A) => B) => Validation<B>;
     flatMap  : <B>(f: (A) => Validation<B>) => Validation<B>;
@@ -151,7 +156,7 @@ module edc {
     invalid: (errors: Array<String>) => { return new Invalid(errors); },
   };
 
-  export interface List<A> {
+  export interface List<A> extends Monad<A> {
     length   : number;
     map      : <B>(f: (A) => B) => List<B>;
     flatMap  : <B>(f: (A) => List<B>) => List<B>;
@@ -273,15 +278,38 @@ module edc {
 
   var future = <A>(f: (A) => any) => { return new Future(f); }
 
+  class ReaderT<A,B> {
+    f: (A) => Monad<B>;
+    constructor(f: (A) => Monad<B>) {
+      this.f = f;
+    }
+    apply(a: A): Monad<B> {
+      return this.f(a);
+    };
+    map<C>(g: (B) => C): ReaderT<A,C> {
+      return new ReaderT((a) => {
+        return this.f(a).map(g);
+      });
+    };
+    flatMap<C>(g: (B) => ReaderT<A,C>): ReaderT<A,C> {
+      return new ReaderT((a) => {
+        return this.f(a).map(g).flatMap((r) => { return r.apply(a); });
+      });
+    };
+  }
+
+  var readerT = <A,B>(f: (A) => Monad<B>) => { return new ReaderT(f); }
+
   export var teep = {
-    array: array,
-    fn: fn,
-    option: option,
+    array:      array,
+    fn:         fn,
+    option:     option,
     validation: validation,
-    list: list,
-    promise: promise,
-    reader: reader,
-    future: future,
+    list:       list,
+    promise:    promise,
+    reader:     reader,
+    future:     future,
+    readerT:    readerT,
   };
 
   var setExports = function () {
@@ -296,4 +324,3 @@ module edc {
   !exports || setExports();
 
 }
-
