@@ -233,6 +233,10 @@ module edc {
 
   var reader = <A,B>(f: (A) => B) => { return new Reader(f); }
 
+  var read = new Reader(function (x) {
+    return x;
+  });
+
   class Future<A> {
     f: (k: (A) => any) => any;
     constructor(f) {
@@ -308,6 +312,7 @@ module edc {
     list:       list,
     promise:    promise,
     reader:     reader,
+    read:       read,
     future:     future,
     readerT:    readerT,
   };

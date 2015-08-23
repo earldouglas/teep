@@ -286,6 +286,19 @@ describe('examples', function () {
       }).apply(6));
     });
 
+    it('read', function () {
+      var getX = teep.read.map(function (e) { return e.x; });
+      var getY = teep.read.map(function (e) { return e.y; });
+      var e = { x: 6, y: 7, };
+      assert.equal(42,
+        getX.flatMap(function (x) {
+          return getY.map(function (y) {
+            return x * y;
+          });
+        }).apply(e)
+      );
+    });
+
   });
 
   describe('future', function () {

@@ -203,6 +203,9 @@ var edc;
         return Reader;
     })();
     var reader = function (f) { return new Reader(f); };
+    var read = new Reader(function (x) {
+        return x;
+    });
     var Future = (function () {
         function Future(f) {
             this.f = f;
@@ -286,6 +289,7 @@ var edc;
         list: list,
         promise: promise,
         reader: reader,
+        read: read,
         future: future,
         readerT: readerT
     };
