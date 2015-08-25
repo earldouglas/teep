@@ -21,6 +21,19 @@ describe('examples', function () {
       assert.equal(yep, true);
       assert.equal(nope, false);
     });
+    it('flatten', function () {
+      var xs = teep.array.flatten([[1,2],[3,4],[5,6]]);
+      assert.deepEqual([1,2,3,4,5,6], xs);
+    });
+    it('map', function () {
+      var xs = teep.array.map([1,2,3], times(2));
+      assert.deepEqual([2,4,6], xs);
+    });
+    it('flatMap', function () {
+      var alsoPlusOne = function (x) { return [x, x + 1]; };
+      var xs = teep.array.flatMap([1,3,5], alsoPlusOne);
+      assert.deepEqual([1,2,3,4,5,6], xs);
+    });
   });
 
   describe('fn', function () {

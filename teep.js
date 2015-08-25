@@ -9,13 +9,40 @@ var exports;
 var edc;
 (function (edc) {
     var array = {
-        contains: function (xs, x) {
+        foldr: function (xs, z, f) {
+            var b = z;
             for (var i = 0; i < xs.length; i++) {
-                if (xs[i] === x) {
-                    return true;
-                }
+                b = f(xs[i], b);
             }
-            return false;
+            return b;
+        },
+        contains: function (xs, x) {
+            return array.foldr(xs, false, function (a, b) {
+                return b || x === a;
+            });
+        },
+        flatten: function (xss) {
+            return array.foldr(xss, [], function (a, b) {
+                return b.concat(a);
+            });
+        },
+        map: function (xs, f) {
+            return array.foldr(xs, [], function (a, bs) {
+                bs.push(f(a));
+                return bs;
+            });
+        },
+        flatMap: function (xs, f) {
+            return array.flatten(array.map(xs, f));
+        }
+    };
+    var object = {
+        keys: function (o) {
+            var ks = [];
+            for (var k in o) {
+                !o.hasOwnProperty(k) || ks.push(k);
+            }
+            return ks;
         }
     };
     var DumbCache = (function () {
@@ -294,12 +321,9 @@ var edc;
         readerT: readerT
     };
     var setExports = function () {
-        for (var i in edc.teep) {
-            var setExport = function () {
-                exports[i] = edc.teep[i];
-            };
-            !edc.teep.hasOwnProperty(i) || setExport();
-        }
+        array.map(object.keys(edc.teep), function (k) {
+            exports[k] = edc.teep[k];
+        });
     };
     !exports || setExports();
 })(edc || (edc = {}));

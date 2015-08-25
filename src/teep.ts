@@ -11,17 +11,45 @@ var exports;
 module edc {
 
   var array = {
-    contains: <A>(xs: Array<A>, x: A): boolean => {
+    foldr: <A,B>(xs: Array<A>, z: B, f: (a: A, b: B) => B): B => {
+      var b = z;
       for (var i = 0; i < xs.length; i++) {
-        if (xs[i] === x) {
-          return true;
-        }
+        b = f(xs[i], b);
       }
-      return false;
+      return b;
+    },
+    contains: <A>(xs: Array<A>, x: A): boolean => {
+      return array.foldr(xs, false, (a: A, b: boolean): boolean => {
+        return b || x === a;
+      });
+    },
+    flatten: <A>(xss: Array<Array<A>>): Array<A> => {
+      return array.foldr(xss, [], (a: Array<A>, b: Array<A>): Array<A> => {
+        return b.concat(a);
+      });
+    },
+    map: <A,B>(xs: Array<A>, f: (A) => B): Array<B> => {
+      return array.foldr(xs, [], (a: A, bs: Array<B>): Array<B> => {
+        bs.push(f(a));
+        return bs;
+      });
+    },
+    flatMap: <A,B>(xs: Array<A>, f: (A) => Array<B>): Array<B> => {
+      return array.flatten(array.map(xs, f));
     },
   };
 
-  export interface Cache<A,B> {
+  var object = {
+    keys: (o: Object): Array<any> => {
+      var ks = [];
+      for (var k in o) {
+        !o.hasOwnProperty(k) || ks.push(k);
+      }
+      return ks;
+    },
+  };
+
+   export interface Cache<A,B> {
     get: (A) => B;
     put: (A, B) => void;
   }
@@ -318,13 +346,10 @@ module edc {
   };
 
   var setExports = function () {
-    for (var i in teep) {
-      var setExport = function () {
-        exports[i] = teep[i];
-      };
-      !teep.hasOwnProperty(i) || setExport();
-    }
-  }
+    array.map(object.keys(teep), (k) => {
+      exports[k] = teep[k];
+    });
+  };
 
   !exports || setExports();
 
