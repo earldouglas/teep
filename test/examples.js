@@ -34,6 +34,12 @@ describe('examples', function () {
       var xs = teep.array.flatMap([1,3,5], alsoPlusOne);
       assert.deepEqual([1,2,3,4,5,6], xs);
     });
+    it('filter', function () {
+      var xs = teep.array.filter([1,2,3,4,5,6], function (x) {
+        return x % 2 === 1 || x === 4;
+      });
+      assert.deepEqual([1,3,4,5], xs);
+    });
   });
 
   describe('fn', function () {
@@ -51,9 +57,6 @@ describe('examples', function () {
       assert.equal(nine, 9);
       assert.equal(five, 5);
     });
-  });
-
-  describe('fn', function () {
     it('curry', function () {
       function add(x, y) {
         return x + y;
@@ -71,9 +74,6 @@ describe('examples', function () {
       assert.equal(five, 5);
       assert.equal(fortyTwo, 42);
     });
-  });
-
-  describe('fn', function () {
     it('memoize', function () {
       function expensiveFn(n) {
         for (var i = 0; i < 10000; i++) {
@@ -99,7 +99,6 @@ describe('examples', function () {
       var fast = t3 - t2;
       assert.ok(slow > 10 * fast); // over 10x faster
     });
-
     it('lazy', function () {
       function expensiveFn(n) {
         for (var i = 0; i < 10000; i++) {
@@ -128,6 +127,38 @@ describe('examples', function () {
       var slow = t4 - t3;
       var fast = t5 - t4;
       assert.ok(slow > 10 * fast); // over 10x faster
+    });
+    it('rate', function (done) {
+      var xs = [];
+      var f = function () {
+        xs.push((new Date()).getTime());
+      };
+
+      var limit = 5;
+      var period = 50;
+      var interval = 5;
+      var count = 101;
+      var f2 = teep.fn.throttle(limit, period, interval, f);
+      for (var i = 0; i < count; i++) {
+        f2();
+      }
+
+      var check = function (above, below) {
+        if (xs.length <= above) {
+          done(Error(xs.length + ' should exceed ' + above));
+        } else if (xs.length > below) {
+          done(Error(xs.length + ' should not exceed ' + below));
+        } else if (xs.length < count) {
+          setTimeout(function () {
+            check(above + limit, below + limit);
+          }, period);
+        } else {
+          done();
+        }
+      };
+
+      setTimeout(function () { check(0, limit); }, period / 2);
+
     });
   });
 

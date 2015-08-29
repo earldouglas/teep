@@ -34,6 +34,14 @@ var edc;
         },
         flatMap: function (xs, f) {
             return array.flatten(array.map(xs, f));
+        },
+        filter: function (xs, f) {
+            return array.foldr(xs, [], function (a, as) {
+                if (f(a)) {
+                    as.push(a);
+                }
+                return as;
+            });
         }
     };
     var object = {
@@ -95,6 +103,32 @@ var edc;
                     get: function () { return fMemo(x); }
                 };
             };
+        },
+        throttle: function (limit, period, interval, f) {
+            var times = [];
+            var throttled = function () {
+                var now = (new Date()).getTime();
+                times = array.filter(times, function (time) {
+                    return now - time < period;
+                });
+                var withinLimit = times.length < limit;
+                if (withinLimit) {
+                    var newest = Math.max.apply(null, times);
+                    var afterInterval = (now - newest) > interval;
+                    if (afterInterval) {
+                        times.push(now);
+                        f();
+                    }
+                    else {
+                        setTimeout(throttled, interval - (now - newest));
+                    }
+                }
+                else {
+                    var oldest = Math.min.apply(null, times);
+                    setTimeout(throttled, period - (now - oldest));
+                }
+            };
+            return throttled;
         }
     };
     var Some = (function () {
