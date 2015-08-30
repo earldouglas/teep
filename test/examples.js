@@ -15,6 +15,14 @@ describe('examples', function () {
     };
 
   describe('array', function () {
+    it('foldr', function () {
+      var sum = function (xs) {
+        return teep.array.foldr(xs, 0, function (z, x) {
+          return z + x;
+        });
+      };
+      assert.equal(10, sum([1,2,3,4]));
+    });
     it('contains', function () {
       var yep  = teep.array.contains([1,2,3], 2); // true
       var nope = teep.array.contains([1,2,3], 4); // false
@@ -105,9 +113,7 @@ describe('examples', function () {
       var fast = t3 - t2;
       assert.ok(slow > 10 * fast); // over 10x faster
     });
-  });
 
-  describe('fn', function () {
     it('lazy', function () {
       function expensiveFn(n) {
         for (var i = 0; i < 10000; i++) {
