@@ -11,13 +11,49 @@ var exports;
 module edc {
 
   var array = {
-    contains: <A>(xs: Array<A>, x: A): boolean => {
+    foldr: <A,B>(xs: Array<A>, z: B, f: (a: A, b: B) => B): B => {
+      var b = z;
       for (var i = 0; i < xs.length; i++) {
-        if (xs[i] === x) {
-          return true;
-        }
+        b = f(xs[i], b);
       }
-      return false;
+      return b;
+    },
+    contains: <A>(xs: Array<A>, x: A): boolean => {
+      return array.foldr(xs, false, (a: A, b: boolean): boolean => {
+        return b || x === a;
+      });
+    },
+    flatten: <A>(xss: Array<Array<A>>): Array<A> => {
+      return array.foldr(xss, [], (a: Array<A>, b: Array<A>): Array<A> => {
+        return b.concat(a);
+      });
+    },
+    map: <A,B>(xs: Array<A>, f: (A) => B): Array<B> => {
+      return array.foldr(xs, [], (a: A, bs: Array<B>): Array<B> => {
+        bs.push(f(a));
+        return bs;
+      });
+    },
+    flatMap: <A,B>(xs: Array<A>, f: (A) => Array<B>): Array<B> => {
+      return array.flatten(array.map(xs, f));
+    },
+    filter: <A>(xs: Array<A>, f: (A) => boolean): Array<A> => {
+      return array.foldr(xs, [], (a: A, as: Array<A>): Array<A> => {
+        if (f(a)) {
+          as.push(a);
+        }
+        return as;
+      });
+    },
+  };
+
+  var object = {
+    keys: (o: Object): Array<any> => {
+      var ks = [];
+      for (var k in o) {
+        !o.hasOwnProperty(k) || ks.push(k);
+      }
+      return ks;
     },
   };
 
@@ -76,6 +112,31 @@ module edc {
         };
       };
     },
+    throttle: (limit: number, period: number, interval: number,
+            f: () => any): () => void => {
+      var times = [];
+      var throttled = function () {
+        var now = (new Date()).getTime();
+        times = array.filter(times, function (time) {
+          return now - time < period;
+        });
+        var withinLimit = times.length < limit
+        if (withinLimit) {
+          var newest = Math.max.apply(null, times);
+          var afterInterval = (now - newest) > interval;
+          if (afterInterval) {
+            times.push(now);
+            f();
+          } else {
+            setTimeout(throttled, interval - (now - newest));
+          }
+        } else {
+          var oldest = Math.min.apply(null, times);
+          setTimeout(throttled, period - (now - oldest));
+        }
+      };
+      return throttled;
+    }
   };
 
   export interface Monad<A> {
@@ -233,6 +294,10 @@ module edc {
 
   var reader = <A,B>(f: (A) => B) => { return new Reader(f); }
 
+  var read = new Reader(function (x) {
+    return x;
+  });
+
   class Future<A> {
     f: (k: (A) => any) => any;
     constructor(f) {
@@ -308,18 +373,16 @@ module edc {
     list:       list,
     promise:    promise,
     reader:     reader,
+    read:       read,
     future:     future,
     readerT:    readerT,
   };
 
   var setExports = function () {
-    for (var i in teep) {
-      var setExport = function () {
-        exports[i] = teep[i];
-      };
-      !teep.hasOwnProperty(i) || setExport();
-    }
-  }
+    array.map(object.keys(teep), (k) => {
+      exports[k] = teep[k];
+    });
+  };
 
   !exports || setExports();
 

@@ -15,11 +15,38 @@ describe('examples', function () {
     };
 
   describe('array', function () {
+    it('foldr', function () {
+      var sum = function (xs) {
+        return teep.array.foldr(xs, 0, function (z, x) {
+          return z + x;
+        });
+      };
+      assert.equal(10, sum([1,2,3,4]));
+    });
     it('contains', function () {
       var yep  = teep.array.contains([1,2,3], 2); // true
       var nope = teep.array.contains([1,2,3], 4); // false
       assert.equal(yep, true);
       assert.equal(nope, false);
+    });
+    it('flatten', function () {
+      var xs = teep.array.flatten([[1,2],[3,4],[5,6]]);
+      assert.deepEqual([1,2,3,4,5,6], xs);
+    });
+    it('map', function () {
+      var xs = teep.array.map([1,2,3], times(2));
+      assert.deepEqual([2,4,6], xs);
+    });
+    it('flatMap', function () {
+      var alsoPlusOne = function (x) { return [x, x + 1]; };
+      var xs = teep.array.flatMap([1,3,5], alsoPlusOne);
+      assert.deepEqual([1,2,3,4,5,6], xs);
+    });
+    it('filter', function () {
+      var xs = teep.array.filter([1,2,3,4,5,6], function (x) {
+        return x % 2 === 1 || x === 4;
+      });
+      assert.deepEqual([1,3,4,5], xs);
     });
   });
 
@@ -115,6 +142,41 @@ describe('examples', function () {
       var slow = t4 - t3;
       var fast = t5 - t4;
       assert.ok(slow > 10 * fast); // over 10x faster
+    });
+  });
+
+  describe('fn', function () {
+    it('throttle', function (done) {
+      var xs = [];
+      var f = function () {
+        xs.push((new Date()).getTime());
+      };
+
+      var limit = 5;
+      var period = 50;
+      var interval = 5;
+      var count = 101;
+      var f2 = teep.fn.throttle(limit, period, interval, f);
+      for (var i = 0; i < count; i++) {
+        f2();
+      }
+
+      var check = function (above, below) {
+        if (xs.length <= above) {
+          done(Error(xs.length + ' should exceed ' + above));
+        } else if (xs.length > below) {
+          done(Error(xs.length + ' should not exceed ' + below));
+        } else if (xs.length < count) {
+          setTimeout(function () {
+            check(above + limit, below + limit);
+          }, period);
+        } else {
+          done();
+        }
+      };
+
+      setTimeout(function () { check(0, limit); }, period / 2);
+
     });
   });
 
@@ -284,6 +346,19 @@ describe('examples', function () {
       assert.equal(72, teep.reader(times(2)).flatMap(function (x) {
         return teep.reader(times(x));
       }).apply(6));
+    });
+
+    it('read', function () {
+      var getX = teep.read.map(function (e) { return e.x; });
+      var getY = teep.read.map(function (e) { return e.y; });
+      var e = { x: 6, y: 7, };
+      assert.equal(42,
+        getX.flatMap(function (x) {
+          return getY.map(function (y) {
+            return x * y;
+          });
+        }).apply(e)
+      );
     });
 
   });

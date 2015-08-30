@@ -9,13 +9,48 @@ var exports;
 var edc;
 (function (edc) {
     var array = {
-        contains: function (xs, x) {
+        foldr: function (xs, z, f) {
+            var b = z;
             for (var i = 0; i < xs.length; i++) {
-                if (xs[i] === x) {
-                    return true;
-                }
+                b = f(xs[i], b);
             }
-            return false;
+            return b;
+        },
+        contains: function (xs, x) {
+            return array.foldr(xs, false, function (a, b) {
+                return b || x === a;
+            });
+        },
+        flatten: function (xss) {
+            return array.foldr(xss, [], function (a, b) {
+                return b.concat(a);
+            });
+        },
+        map: function (xs, f) {
+            return array.foldr(xs, [], function (a, bs) {
+                bs.push(f(a));
+                return bs;
+            });
+        },
+        flatMap: function (xs, f) {
+            return array.flatten(array.map(xs, f));
+        },
+        filter: function (xs, f) {
+            return array.foldr(xs, [], function (a, as) {
+                if (f(a)) {
+                    as.push(a);
+                }
+                return as;
+            });
+        }
+    };
+    var object = {
+        keys: function (o) {
+            var ks = [];
+            for (var k in o) {
+                !o.hasOwnProperty(k) || ks.push(k);
+            }
+            return ks;
         }
     };
     var DumbCache = (function () {
@@ -68,6 +103,32 @@ var edc;
                     get: function () { return fMemo(x); }
                 };
             };
+        },
+        throttle: function (limit, period, interval, f) {
+            var times = [];
+            var throttled = function () {
+                var now = (new Date()).getTime();
+                times = array.filter(times, function (time) {
+                    return now - time < period;
+                });
+                var withinLimit = times.length < limit;
+                if (withinLimit) {
+                    var newest = Math.max.apply(null, times);
+                    var afterInterval = (now - newest) > interval;
+                    if (afterInterval) {
+                        times.push(now);
+                        f();
+                    }
+                    else {
+                        setTimeout(throttled, interval - (now - newest));
+                    }
+                }
+                else {
+                    var oldest = Math.min.apply(null, times);
+                    setTimeout(throttled, period - (now - oldest));
+                }
+            };
+            return throttled;
         }
     };
     var Some = (function () {
@@ -203,6 +264,9 @@ var edc;
         return Reader;
     })();
     var reader = function (f) { return new Reader(f); };
+    var read = new Reader(function (x) {
+        return x;
+    });
     var Future = (function () {
         function Future(f) {
             this.f = f;
@@ -286,16 +350,14 @@ var edc;
         list: list,
         promise: promise,
         reader: reader,
+        read: read,
         future: future,
         readerT: readerT
     };
     var setExports = function () {
-        for (var i in edc.teep) {
-            var setExport = function () {
-                exports[i] = edc.teep[i];
-            };
-            !edc.teep.hasOwnProperty(i) || setExport();
-        }
+        array.map(object.keys(edc.teep), function (k) {
+            exports[k] = edc.teep[k];
+        });
     };
     !exports || setExports();
 })(edc || (edc = {}));
