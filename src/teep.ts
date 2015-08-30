@@ -57,7 +57,7 @@ module edc {
     },
   };
 
-   export interface Cache<A,B> {
+  export interface Cache<A,B> {
     get: (A) => B;
     put: (A, B) => void;
   }
