@@ -146,7 +146,7 @@ describe('examples', function () {
   });
 
   describe('fn', function () {
-    it('rate', function (done) {
+    it('throttle', function (done) {
       var xs = [];
       var f = function () {
         xs.push((new Date()).getTime());
