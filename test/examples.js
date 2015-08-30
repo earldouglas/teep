@@ -57,6 +57,9 @@ describe('examples', function () {
       assert.equal(nine, 9);
       assert.equal(five, 5);
     });
+  });
+
+  describe('fn', function () {
     it('curry', function () {
       function add(x, y) {
         return x + y;
@@ -74,6 +77,9 @@ describe('examples', function () {
       assert.equal(five, 5);
       assert.equal(fortyTwo, 42);
     });
+  });
+
+  describe('fn', function () {
     it('memoize', function () {
       function expensiveFn(n) {
         for (var i = 0; i < 10000; i++) {
@@ -99,6 +105,9 @@ describe('examples', function () {
       var fast = t3 - t2;
       assert.ok(slow > 10 * fast); // over 10x faster
     });
+  });
+
+  describe('fn', function () {
     it('lazy', function () {
       function expensiveFn(n) {
         for (var i = 0; i < 10000; i++) {
@@ -128,6 +137,9 @@ describe('examples', function () {
       var fast = t5 - t4;
       assert.ok(slow > 10 * fast); // over 10x faster
     });
+  });
+
+  describe('fn', function () {
     it('rate', function (done) {
       var xs = [];
       var f = function () {
