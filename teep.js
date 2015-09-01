@@ -121,11 +121,9 @@ var edc;
                     var newest = Math.max.apply(null, times);
                     var afterInterval = (now - newest) > interval;
                     if (afterInterval) {
+                        times.push(_now());
                         var k = queue.shift();
-                        if (k) {
-                            times.push(_now());
-                            k();
-                        }
+                        k();
                     }
                     else {
                         setTimeout(run, interval - (now - newest));
