@@ -105,9 +105,14 @@ var edc;
             };
         },
         throttle: function (limit, period, interval, f) {
-            var times = [];
-            var throttled = function () {
-                var now = (new Date()).getTime();
+            var times = []; // A log of call times
+            var queue = []; // A queue of continuations
+            var _now = function () {
+                return (new Date()).getTime();
+            };
+            var run = function () {
+                var now = _now();
+                // Throw away old times that we don't care about
                 times = array.filter(times, function (time) {
                     return now - time < period;
                 });
@@ -116,17 +121,29 @@ var edc;
                     var newest = Math.max.apply(null, times);
                     var afterInterval = (now - newest) > interval;
                     if (afterInterval) {
-                        times.push(now);
-                        f();
+                        var k = queue.shift();
+                        if (k) {
+                            times.push(_now());
+                            k();
+                        }
                     }
                     else {
-                        setTimeout(throttled, interval - (now - newest));
+                        setTimeout(run, interval - (now - newest));
                     }
                 }
                 else {
                     var oldest = Math.min.apply(null, times);
-                    setTimeout(throttled, period - (now - oldest));
+                    setTimeout(run, period - (now - oldest));
                 }
+            };
+            var throttled = function (x) {
+                // Queue the function call with plenty of defensive scoping
+                queue.push((function (x) {
+                    return function () {
+                        f(x);
+                    };
+                })(x));
+                run();
             };
             return throttled;
         }

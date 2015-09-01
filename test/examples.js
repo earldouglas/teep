@@ -178,6 +178,44 @@ describe('examples', function () {
       setTimeout(function () { check(0, limit); }, period / 2);
 
     });
+
+    it('throttle with ordering', function (done) {
+      var xs = [];
+      var f = function (x) {
+        xs.push(x);
+      };
+
+      var limit = 5;
+      var period = 50;
+      var interval = 5;
+      var count = 101;
+      var f2 = teep.fn.throttle(limit, period, interval, f);
+      for (var i = 0; i < count; i++) {
+        f2(i);
+      }
+
+      var check = function (above, below) {
+        if (xs.length <= above) {
+          done(Error(xs.length + ' should exceed ' + above));
+        } else if (xs.length > below) {
+          done(Error(xs.length + ' should not exceed ' + below));
+        } else if (xs.length < count) {
+          setTimeout(function () {
+            check(above + limit, below + limit);
+          }, period);
+        } else {
+          var ys = [];
+          for (var i = 0; i < count; i++) {
+            ys.push(i);
+          }
+          assert.deepEqual(ys, xs);
+          done();
+        }
+      };
+
+      setTimeout(function () { check(0, limit); }, period / 2);
+
+    });
   });
 
   describe('option', function () {
