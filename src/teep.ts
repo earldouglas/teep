@@ -112,28 +112,51 @@ module edc {
         };
       };
     },
-    throttle: (limit: number, period: number, interval: number,
-            f: () => any): () => void => {
-      var times = [];
-      var throttled = function () {
-        var now = (new Date()).getTime();
-        times = array.filter(times, function (time) {
+    throttle: <A>(limit: number, period: number, interval: number,
+            f: (A) => any): (A) => void => {
+
+      var times = []; // A log of call times
+      var queue = []; // A queue of continuations
+
+      var _now = () => {
+        return (new Date()).getTime();
+      };
+
+      var run = () => {
+        var now = _now();
+
+        // Throw away old times that we don't care about
+        times = array.filter(times, (time) => {
           return now - time < period;
         });
+ 
         var withinLimit = times.length < limit
         if (withinLimit) {
           var newest = Math.max.apply(null, times);
           var afterInterval = (now - newest) > interval;
           if (afterInterval) {
-            times.push(now);
-            f();
+            times.push(_now());
+            var k = queue.shift();
+            k();
           } else {
-            setTimeout(throttled, interval - (now - newest));
+            setTimeout(run, interval - (now - newest));
           }
         } else {
           var oldest = Math.min.apply(null, times);
-          setTimeout(throttled, period - (now - oldest));
+          setTimeout(run, period - (now - oldest));
         }
+      };
+
+      var throttled = (x: A): void => {
+
+        // Queue the function call with plenty of defensive scoping
+        queue.push(((x) => {
+          return () => {
+            f(x);
+          };
+        })(x));
+
+        run();
       };
       return throttled;
     }
