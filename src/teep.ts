@@ -388,6 +388,40 @@ module edc {
 
   var readerT = <A,B>(f: (A) => Monad<B>) => { return new ReaderT(f); }
 
+  class StateTuple<S,A> {
+    state: S;
+    value: A;
+    constructor(s: S, a: A) {
+      this.state = s;
+      this.value = a;
+    }
+  }
+
+  var state = <S,A>(f: (S) => StateTuple<S,A>) => { return new State(f); }
+
+  class State<S,A> {
+    f: (S) => StateTuple<S,A>;
+    constructor(f: (S) => StateTuple<S,A>) {
+      this.f = f;
+    }
+    apply(s: S): StateTuple<S,A> {
+      return this.f(s);
+    };
+    map<B>(g: (A) => B): State<S,B> {
+      return state((s: S) => {
+        var sa: StateTuple<S,A> = this.f(s);
+        return new StateTuple(sa.state, g(sa.value));
+      });
+    };
+    flatMap<B>(g: (A) => State<S,B>): State<S,B> {
+      return state((s: S) => {
+        var sa: StateTuple<S,A> = this.f(s);
+        var sb: State<S,B> = g(sa.value);
+        return sb.apply(sa.state);
+      });
+    };
+  }
+
   export var teep = {
     array:      array,
     fn:         fn,
@@ -399,6 +433,7 @@ module edc {
     read:       read,
     future:     future,
     readerT:    readerT,
+    state:      state,
   };
 
   var setExports = function () {

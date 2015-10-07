@@ -123,22 +123,22 @@ describe('examples', function () {
         }
         return n;
       }
-  
+
       var t1 = Date.now();
       var lazyVal = teep.fn.lazy(expensiveFn)(42); // lazily apply 42 -- no computation yet
       var t2 = Date.now();
-  
+
       var t3 = Date.now();
       var slowResult = lazyVal.get(); // expensive computation the first time
       var t4 = Date.now();
       var fastResult = lazyVal.get(); // cheap cache lookup the second time
       var t5 = Date.now();
-  
+
       assert.equal(slowResult, 42);
       assert.equal(fastResult, 42);
-  
+
       assert.ok(t2 - t1 < 10); // roughly immediate
-  
+
       var slow = t4 - t3;
       var fast = t5 - t4;
       assert.ok(slow > 10 * fast); // over 10x faster
@@ -262,7 +262,7 @@ describe('examples', function () {
       ], function (x, y, z) {
         return x * (y + z);
       });
-  
+
       p.then(function (x) {
         assert.equal(x, 42);
         done();
@@ -407,7 +407,7 @@ describe('examples', function () {
         return k(x);
       };
     };
-    
+
     var asyncF = function (f) {
       return function (x) {
         return teep.future(function (k) {
@@ -415,7 +415,7 @@ describe('examples', function () {
         });
       };
     };
-    
+
     var verify = function (done) {
       return function (y) {
         if (42 === y) {
@@ -491,6 +491,48 @@ describe('examples', function () {
       teep.readerT(getAnswer).flatMap(function (x) {
         return addToAnswer(x + 1);
       }).apply(db).apply(verify(85, done));
+    });
+
+  });
+
+  describe('state', function () {
+
+    var db = {
+      answer: 42,
+    };
+
+    var getAnswer = teep.state(function (db) {
+      return { state: db, value: db.answer };
+    });
+
+    var addToAnswer = function(x) {
+      return teep.state(function (db) {
+        db.answer = db.answer + x;
+        return { state: db, value: null };
+      });
+    }
+
+    it('apply', function () {
+      var result = getAnswer.apply(db);
+      assert.deepEqual(42, result.value);
+    });
+
+    it('map', function () {
+      var result =
+        getAnswer.map(function (x) {
+          return x + 1;
+        }).apply(db);
+      assert.deepEqual(43, result.value);
+    });
+
+    it('flatMap', function () {
+      var result =
+        getAnswer.flatMap(function (x) {
+          return addToAnswer(x / 2);
+        }).flatMap(function (x) {
+          return getAnswer;
+        }).apply(db);
+      assert.deepEqual((42 / 2) + 42, result.value);
     });
 
   });

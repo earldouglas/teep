@@ -357,6 +357,41 @@ var edc;
         return ReaderT;
     })();
     var readerT = function (f) { return new ReaderT(f); };
+    var StateTuple = (function () {
+        function StateTuple(s, a) {
+            this.state = s;
+            this.value = a;
+        }
+        return StateTuple;
+    })();
+    var state = function (f) { return new State(f); };
+    var State = (function () {
+        function State(f) {
+            this.f = f;
+        }
+        State.prototype.apply = function (s) {
+            return this.f(s);
+        };
+        ;
+        State.prototype.map = function (g) {
+            var _this = this;
+            return state(function (s) {
+                var sa = _this.f(s);
+                return new StateTuple(sa.state, g(sa.value));
+            });
+        };
+        ;
+        State.prototype.flatMap = function (g) {
+            var _this = this;
+            return state(function (s) {
+                var sa = _this.f(s);
+                var sb = g(sa.value);
+                return sb.apply(sa.state);
+            });
+        };
+        ;
+        return State;
+    })();
     edc.teep = {
         array: array,
         fn: fn,
@@ -367,7 +402,8 @@ var edc;
         reader: reader,
         read: read,
         future: future,
-        readerT: readerT
+        readerT: readerT,
+        state: state
     };
     var setExports = function () {
         array.map(object.keys(edc.teep), function (k) {
