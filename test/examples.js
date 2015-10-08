@@ -497,42 +497,33 @@ describe('examples', function () {
 
   describe('state', function () {
 
-    var db = {
-      answer: 42,
-    };
-
-    var getAnswer = teep.state(function (db) {
-      return { state: db, value: db.answer };
+    var getX = teep.state(function (s) {
+      return { state: s, value: s.x };
     });
 
-    var addToAnswer = function(x) {
-      return teep.state(function (db) {
-        db.answer = db.answer + x;
-        return { state: db, value: null };
+    var setX = function (x) {
+      return teep.state(function (s) {
+        s.x = x;
+        return { state: s, value: null };
       });
-    }
+    };
 
     it('apply', function () {
-      var result = getAnswer.apply(db);
-      assert.deepEqual(42, result.value);
+      var x = getX.apply({ x: 42 }).value;
+      assert.deepEqual(42, x);
     });
 
     it('map', function () {
-      var result =
-        getAnswer.map(function (x) {
-          return x + 1;
-        }).apply(db);
-      assert.deepEqual(43, result.value);
+      var x = getX.map(times(7)).apply({ x: 6 }).value;
+      assert.deepEqual(42, x);
     });
 
     it('flatMap', function () {
-      var result =
-        getAnswer.flatMap(function (x) {
-          return addToAnswer(x / 2);
-        }).flatMap(function (x) {
-          return getAnswer;
-        }).apply(db);
-      assert.deepEqual((42 / 2) + 42, result.value);
+      var x =
+        getX.map(times(7)).flatMap(setX).flatMap(function (x) {
+          return getX;
+        }).apply({ x: 6 }).value;
+      assert.deepEqual(42, x);
     });
 
   });
