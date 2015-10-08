@@ -504,7 +504,7 @@ describe('examples', function () {
     var setX = function (x) {
       return teep.state(function (s) {
         s.x = x;
-        return { state: s, value: null };
+        return { state: s, value: {} };
       });
     };
 
