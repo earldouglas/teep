@@ -204,6 +204,40 @@ module edc {
     }
   }
 
+  export interface Either<A,B> extends Monad<A> {
+    left     : boolean;
+    right    : boolean;
+    map      : <C>(f: (B) => C) => Either<A,C>;
+    flatMap  : <C>(f: (B) => Either<A,C>) => Either<A,C>;
+  }
+
+  class Right<B> implements Either<never,B> {
+    value: B;
+    constructor(value: B) {
+      this.value = value;
+    }
+    left     = false;
+    right    = true;
+    map      = (f) => { return new Right(f(this.value)); };
+    flatMap  = (f) => { return f(this.value); };
+    toString = () => { return 'right(' + this.value.toString() + ')'; };
+  }
+
+  class Left<A> implements Either<A,never> {
+    value: A;
+    constructor(value: A) {
+      this.value = value;
+    }
+    left     = true;
+    right    = false;
+    map      = () => { return this; };
+    flatMap  = () => { return this; };
+    toString = () => { return 'left(' + this.value.toString() + ')'; };
+  }
+
+  var right = <A,B>(value: B): Either<A,B> => { return new Right(value); };
+  var left  = <A,B>(value: A): Either<A,B> => { return new Left(value); };
+
   export interface Validation<A> extends Monad<A> {
     valid    : boolean;
     map      : <B>(f: (A) => B) => Validation<B>;
@@ -434,6 +468,8 @@ module edc {
     future:     future,
     readerT:    readerT,
     state:      state,
+    left:       left,
+    right:      right,
   };
 
   var setExports = function () {

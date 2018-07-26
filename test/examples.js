@@ -253,6 +253,35 @@ describe('examples', function () {
     });
   });
 
+  describe('either', function () {
+    var either42 = function (x) {
+      if (x === 42) {
+        return teep.right(x);
+      } else {
+        return teep.left('not forty-two');
+      }
+    };
+
+    it('constructor', function () {
+      assert( teep.left("error'd").left);
+      assert(!teep.left("error'd").right);
+      assert( teep.right(42).right);
+      assert(!teep.right(42).left);
+    });
+
+    it('map', function () {
+      assert.equal("left(error'd)", teep.left("error'd").map(times(2)).toString());
+      assert.equal('right(42)', teep.right(21).map(times(2)).toString());
+    });
+
+    it('flatMap', function () {
+      assert.equal("left(error'd)", teep.left("error'd").flatMap(either42).toString());
+      assert.equal('left(not forty-two)', teep.right(41).flatMap(either42).toString());
+      assert.equal('right(42)', teep.right(42).flatMap(either42).toString());
+    });
+
+  });
+
   describe('promise', function () {
     it('collect', function (done) {
       var p = teep.promise.collect([

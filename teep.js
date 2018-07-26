@@ -53,7 +53,7 @@ var edc;
             return ks;
         }
     };
-    var DumbCache = (function () {
+    var DumbCache = /** @class */ (function () {
         function DumbCache() {
             var _this = this;
             this.cache = {};
@@ -61,7 +61,7 @@ var edc;
             this.put = function (k, v) { _this.cache[k] = v; };
         }
         return DumbCache;
-    })();
+    }());
     var fn = {
         compose: function (f, g) {
             return function (x) {
@@ -146,7 +146,7 @@ var edc;
             return throttled;
         }
     };
-    var Some = (function () {
+    var Some = /** @class */ (function () {
         function Some(value) {
             var _this = this;
             this.empty = false;
@@ -157,8 +157,8 @@ var edc;
             this.value = value;
         }
         return Some;
-    })();
-    var None = (function () {
+    }());
+    var None = /** @class */ (function () {
         function None() {
             var _this = this;
             this.empty = true;
@@ -168,7 +168,7 @@ var edc;
             this.toString = function () { return 'none()'; };
         }
         return None;
-    })();
+    }());
     var _none = new None();
     var option = function (value) {
         if (value !== null && typeof value !== 'undefined') {
@@ -178,7 +178,33 @@ var edc;
             return _none;
         }
     };
-    var Valid = (function () {
+    var Right = /** @class */ (function () {
+        function Right(value) {
+            var _this = this;
+            this.left = false;
+            this.right = true;
+            this.map = function (f) { return new Right(f(_this.value)); };
+            this.flatMap = function (f) { return f(_this.value); };
+            this.toString = function () { return 'right(' + _this.value.toString() + ')'; };
+            this.value = value;
+        }
+        return Right;
+    }());
+    var Left = /** @class */ (function () {
+        function Left(value) {
+            var _this = this;
+            this.left = true;
+            this.right = false;
+            this.map = function () { return _this; };
+            this.flatMap = function () { return _this; };
+            this.toString = function () { return 'left(' + _this.value.toString() + ')'; };
+            this.value = value;
+        }
+        return Left;
+    }());
+    var right = function (value) { return new Right(value); };
+    var left = function (value) { return new Left(value); };
+    var Valid = /** @class */ (function () {
         function Valid(value) {
             var _this = this;
             this.valid = true;
@@ -189,8 +215,8 @@ var edc;
             this.value = value;
         }
         return Valid;
-    })();
-    var Invalid = (function () {
+    }());
+    var Invalid = /** @class */ (function () {
         function Invalid(errors) {
             var _this = this;
             this.valid = false;
@@ -201,12 +227,12 @@ var edc;
             this.errors = errors;
         }
         return Invalid;
-    })();
+    }());
     var validation = {
         valid: function (value) { return new Valid(value); },
         invalid: function (errors) { return new Invalid(errors); }
     };
-    var Nil = (function () {
+    var Nil = /** @class */ (function () {
         function Nil() {
             var _this = this;
             this.length = 0;
@@ -216,8 +242,8 @@ var edc;
             this.toString = function () { return 'nil'; };
         }
         return Nil;
-    })();
-    var Cons = (function () {
+    }());
+    var Cons = /** @class */ (function () {
         function Cons(head, tail) {
             var _this = this;
             this.map = function (f) { return new Cons(f(_this.head), _this.tail.map(f)); };
@@ -229,7 +255,7 @@ var edc;
             this.length = 1 + this.tail.length;
         }
         return Cons;
-    })();
+    }());
     var _nil = new Nil();
     var list = function (head, tail) {
         if (tail === undefined || tail === null) {
@@ -254,7 +280,7 @@ var edc;
             return p.then(function (r) { return f(r); });
         }
     };
-    var Reader = (function () {
+    var Reader = /** @class */ (function () {
         function Reader(f) {
             this.f = f;
         }
@@ -277,12 +303,12 @@ var edc;
         };
         ;
         return Reader;
-    })();
+    }());
     var reader = function (f) { return new Reader(f); };
     var read = new Reader(function (x) {
         return x;
     });
-    var Future = (function () {
+    var Future = /** @class */ (function () {
         function Future(f) {
             this.f = f;
         }
@@ -330,9 +356,9 @@ var edc;
         };
         ;
         return Future;
-    })();
+    }());
     var future = function (f) { return new Future(f); };
-    var ReaderT = (function () {
+    var ReaderT = /** @class */ (function () {
         function ReaderT(f) {
             this.f = f;
         }
@@ -355,17 +381,17 @@ var edc;
         };
         ;
         return ReaderT;
-    })();
+    }());
     var readerT = function (f) { return new ReaderT(f); };
-    var StateTuple = (function () {
+    var StateTuple = /** @class */ (function () {
         function StateTuple(s, a) {
             this.state = s;
             this.value = a;
         }
         return StateTuple;
-    })();
+    }());
     var state = function (f) { return new State(f); };
-    var State = (function () {
+    var State = /** @class */ (function () {
         function State(f) {
             this.f = f;
         }
@@ -391,7 +417,7 @@ var edc;
         };
         ;
         return State;
-    })();
+    }());
     edc.teep = {
         array: array,
         fn: fn,
@@ -403,7 +429,9 @@ var edc;
         read: read,
         future: future,
         readerT: readerT,
-        state: state
+        state: state,
+        left: left,
+        right: right
     };
     var setExports = function () {
         array.map(object.keys(edc.teep), function (k) {
