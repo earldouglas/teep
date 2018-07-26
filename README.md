@@ -9,7 +9,7 @@ in the browser.
 
 ## Documentation
 
-* [Current release: 1.4.0](docs/1.4.md)
+* [Current release: 1.5.0](docs/1.5.md)
 * [Prior releases](docs/)
 
 Releases follow [Specified
