@@ -48,7 +48,9 @@ var edc;
         keys: function (o) {
             var ks = [];
             for (var k in o) {
-                !o.hasOwnProperty(k) || ks.push(k);
+                if (o.hasOwnProperty(k)) {
+                    ks.push(k);
+                }
             }
             return ks;
         }
@@ -287,21 +289,18 @@ var edc;
         Reader.prototype.apply = function (a) {
             return this.f(a);
         };
-        ;
         Reader.prototype.map = function (g) {
             var _this = this;
             return new Reader(function (a) {
                 return g(_this.f(a));
             });
         };
-        ;
         Reader.prototype.flatMap = function (g) {
             var _this = this;
             return new Reader(function (a) {
                 return g(_this.f(a)).apply(a);
             });
         };
-        ;
         return Reader;
     }());
     var reader = function (f) { return new Reader(f); };
@@ -315,7 +314,6 @@ var edc;
         Future.prototype.apply = function (k) {
             this.f(k);
         };
-        ;
         Future.prototype.map = function (g) {
             var _this = this;
             return new Future(function (k) {
@@ -324,7 +322,6 @@ var edc;
                 });
             });
         };
-        ;
         Future.prototype.flatMap = function (g) {
             var _this = this;
             return new Future(function (k) {
@@ -333,7 +330,6 @@ var edc;
                 });
             });
         };
-        ;
         Future.prototype.sequence = function (f2) {
             var _this = this;
             var a;
@@ -354,7 +350,6 @@ var edc;
                 });
             });
         };
-        ;
         return Future;
     }());
     var future = function (f) { return new Future(f); };
@@ -365,21 +360,18 @@ var edc;
         ReaderT.prototype.apply = function (a) {
             return this.f(a);
         };
-        ;
         ReaderT.prototype.map = function (g) {
             var _this = this;
             return new ReaderT(function (a) {
                 return _this.f(a).map(g);
             });
         };
-        ;
         ReaderT.prototype.flatMap = function (g) {
             var _this = this;
             return new ReaderT(function (a) {
                 return _this.f(a).map(g).flatMap(function (r) { return r.apply(a); });
             });
         };
-        ;
         return ReaderT;
     }());
     var readerT = function (f) { return new ReaderT(f); };
@@ -398,7 +390,6 @@ var edc;
         State.prototype.apply = function (s) {
             return this.f(s);
         };
-        ;
         State.prototype.map = function (g) {
             var _this = this;
             return state(function (s) {
@@ -406,7 +397,6 @@ var edc;
                 return new StateTuple(sa.state, g(sa.value));
             });
         };
-        ;
         State.prototype.flatMap = function (g) {
             var _this = this;
             return state(function (s) {
@@ -415,7 +405,6 @@ var edc;
                 return sb.apply(sa.state);
             });
         };
-        ;
         return State;
     }());
     edc.teep = {
@@ -438,5 +427,7 @@ var edc;
             exports[k] = edc.teep[k];
         });
     };
-    !exports || setExports();
+    if (exports) {
+        setExports();
+    }
 })(edc || (edc = {}));

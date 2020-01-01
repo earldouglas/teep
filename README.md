@@ -1,7 +1,7 @@
 # Teep
 
-[![Build Status](https://travis-ci.org/earldouglas/teep.svg?branch=master)](https://travis-ci.org/earldouglas/teep)
-[![Coverage Status](https://coveralls.io/repos/earldouglas/teep/badge.svg?branch=master&service=github)](https://coveralls.io/github/earldouglas/teep?branch=master)
+![Build Status](https://github.com/earldouglas/teep/workflows/build/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/earldouglas/teep/badge.svg)](https://coveralls.io/github/earldouglas/teep)
 
 Teep is a JavaScript library for functional programming.  It works both
 as a [Node.js module](https://www.npmjs.org/package/teep), and directly

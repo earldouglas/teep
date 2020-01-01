@@ -51,7 +51,9 @@ module edc {
     keys: (o: Object): Array<any> => {
       var ks = [];
       for (var k in o) {
-        !o.hasOwnProperty(k) || ks.push(k);
+        if (o.hasOwnProperty(k)) {
+	  ks.push(k);
+	}
       }
       return ks;
     },
@@ -336,17 +338,17 @@ module edc {
     }
     apply(a: A): B {
       return this.f(a);
-    };
+    }
     map<C>(g: (B) => C): Reader<A,C> {
       return new Reader((a) => {
         return g(this.f(a));
       });
-    };
+    }
     flatMap<C>(g: (B) => Reader<A,C>): Reader<A,C> {
       return new Reader((a) => {
         return g(this.f(a)).apply(a);
       });
-    };
+    }
   }
 
   var reader = <A,B>(f: (A) => B) => { return new Reader(f); }
@@ -362,21 +364,21 @@ module edc {
     }
     apply(k: (A) => any): void {
       this.f(k);
-    };
+    }
     map<B>(g: (A) => B): Future<B> {
       return new Future((k: (B) => any) => {
         return this.f((a: A) => {
           k(g(a));
         });
       });
-    };
+    }
     flatMap<B>(g: (A) => Future<B>): Future<B> {
       return new Future((k: (B) => any) => {
         return this.f((a: A) => {
           g(a).apply(k);
         });
       });
-    };
+    }
     sequence<B>(f2: Future<B>): Future<(A) => B> {
       var a: A;
       var b: B;
@@ -395,7 +397,7 @@ module edc {
           kk();
         });
       });
-    };
+    }
   }
 
   var future = <A>(f: (A) => any) => { return new Future(f); }
@@ -407,17 +409,17 @@ module edc {
     }
     apply(a: A): Monad<B> {
       return this.f(a);
-    };
+    }
     map<C>(g: (B) => C): ReaderT<A,C> {
       return new ReaderT((a) => {
         return this.f(a).map(g);
       });
-    };
+    }
     flatMap<C>(g: (B) => ReaderT<A,C>): ReaderT<A,C> {
       return new ReaderT((a) => {
         return this.f(a).map(g).flatMap((r) => { return r.apply(a); });
       });
-    };
+    }
   }
 
   var readerT = <A,B>(f: (A) => Monad<B>) => { return new ReaderT(f); }
@@ -440,20 +442,20 @@ module edc {
     }
     apply(s: S): StateTuple<S,A> {
       return this.f(s);
-    };
+    }
     map<B>(g: (A) => B): State<S,B> {
       return state((s: S) => {
         var sa: StateTuple<S,A> = this.f(s);
         return new StateTuple(sa.state, g(sa.value));
       });
-    };
+    }
     flatMap<B>(g: (A) => State<S,B>): State<S,B> {
       return state((s: S) => {
         var sa: StateTuple<S,A> = this.f(s);
         var sb: State<S,B> = g(sa.value);
         return sb.apply(sa.state);
       });
-    };
+    }
   }
 
   export var teep = {
@@ -478,6 +480,8 @@ module edc {
     });
   };
 
-  !exports || setExports();
+  if (exports) {
+    setExports();
+  }
 
 }
