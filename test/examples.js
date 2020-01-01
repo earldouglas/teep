@@ -2,7 +2,7 @@
 
 if (!global.Promise) { global.Promise = require('bluebird'); }
 
-var assert = require("assert")
+var assert = require("assert");
 var teep = require('../teep.js');
 
 describe('examples', function () {
@@ -496,7 +496,7 @@ describe('examples', function () {
           return k(db.answer + x);
         });
       });
-    };
+    }
 
     function verify(x, done) {
       return function (y) {
@@ -504,7 +504,7 @@ describe('examples', function () {
           done();
         }
       };
-    };
+    }
 
     it('apply', function (done) {
       teep.readerT(getAnswer).apply(db).apply(verify(42, done));
