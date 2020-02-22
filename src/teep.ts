@@ -170,10 +170,11 @@ module edc {
   }
 
   export interface Option<A> extends Monad<A> {
-    empty    : boolean;
-    map      : <B>(f: (A) => B) => Option<B>;
-    flatMap  : <B>(f: (A) => Option<B>) => Option<B>;
-    ap       : <B>(x: Option<(A) => B>) => Option<B>;
+    empty     : boolean;
+    map       : <B>(f: (A) => B) => Option<B>;
+    flatMap   : <B>(f: (A) => Option<B>) => Option<B>;
+    getOrElse : (x: A) => A;
+    ap        : <B>(x: Option<(A) => B>) => Option<B>;
   }
 
   class Some<A> implements Option<A> {
@@ -181,19 +182,21 @@ module edc {
     constructor(value: A) {
       this.value = value;
     }
-    empty    = false;
-    map      = (f) => { return option(f(this.value)); };
-    flatMap  = (f) => { return f(this.value); };
-    ap       = <B>(x: Option<(A) => B>) => { return x.map((f) => f(this.value)); };
-    toString = () => { return 'some(' + this.value.toString() + ')'; };
+    empty     = false;
+    map       = (f) => { return option(f(this.value)); };
+    flatMap   = (f) => { return f(this.value); };
+    ap        = <B>(x: Option<(A) => B>) => { return x.map((f) => f(this.value)); };
+    getOrElse = () => { return this.value; };
+    toString  = () => { return 'some(' + this.value.toString() + ')'; };
   }
 
   class None<A> implements Option<A> {
-    empty    = true;
-    map      = () => { return this; };
-    flatMap  = () => { return this; };
-    ap       = () => { return this; };
-    toString = () => { return 'none()'; };
+    empty     = true;
+    map       = () => { return this; };
+    flatMap   = () => { return this; };
+    ap        = () => { return this; };
+    getOrElse = (x: A) => { return x; };
+    toString  = () => { return 'none()'; };
   }
  
   var _none = new None();
