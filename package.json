@@ -18,7 +18,7 @@
   "license": "MIT",
   "main": "teep",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 18.0.0"
   },
   "scripts": {
     "build": "tsc src/teep.ts --outDir .",
@@ -35,11 +35,10 @@
     }
   },
   "devDependencies": {
-    "bluebird": "2.2.2",
-    "coveralls": "2.11.2",
-    "istanbul": "0.3.5",
-    "jshint": "2.9.4",
-    "mocha": "2.2.5",
+    "coveralls": "^3.1.1",
+    "istanbul": "^0.4.5",
+    "jshint": "^2.13.6",
+    "mocha": "^10.3.0",
     "mocha-lcov-reporter": "0.0.1",
     "typescript": "2.9"
   },
