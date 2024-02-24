@@ -18,7 +18,7 @@
   "license": "MIT",
   "main": "teep",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 18.0.0"
   },
   "scripts": {
     "build": "tsc src/teep.ts --outDir .",
