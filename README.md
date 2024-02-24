@@ -13,4 +13,4 @@ in the browser.
 * [Prior releases](docs/)
 
 Releases follow [Specified
-Versioning](https://earldouglas.com/posts/specver.html) guidelines.
+Versioning](https://earldouglas.com/specver.html) guidelines.
